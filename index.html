@@ -3,340 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulateur de frais de donation immobilière</title>
+  <title>Simulateur de frais de donation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #f4f3f0;
-      --surface: #ffffff;
-      --surface-alt: #f9f9f7;
-      --border: rgba(0,0,0,0.10);
-      --border-strong: rgba(0,0,0,0.18);
-      --text: #0b0b0a;
-      --text-sec: #52514e;
-      --text-muted: #898781;
-      --accent: #1a4f8c;
-      --accent-light: #e6f0fb;
-      --accent-mid: #2a78d6;
-      --green: #0f6e56;
-      --green-light: #e1f5ee;
-      --amber: #854f0b;
-      --amber-light: #faeeda;
-      --violet: #3c3489;
-      --violet-light: #eeedfe;
-      --gray: #5f5e5a;
-      --gray-light: #f1efe8;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --bg: #f4f3f0; --surface: #ffffff; --surface-alt: #f9f9f7;
+      --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
+      --text: #0b0b0a; --text-sec: #52514e; --text-muted: #898781;
+      --accent: #1a4f8c; --accent-light: #e6f0fb; --accent-mid: #2a78d6;
+      --green: #0f6e56; --green-light: #e1f5ee;
+      --amber: #854f0b; --amber-light: #faeeda;
+      --violet: #3c3489; --violet-light: #eeedfe;
+      --radius: 8px; --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
     }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+    .container { max-width: 760px; margin: 0 auto; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 2rem 1rem 4rem;
-    }
+    /* En-tête */
+    .page-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .page-header .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .page-header h1 { font-family: 'Lora', Georgia, serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1.25; }
+    .page-header p { font-size: 14px; color: var(--text-sec); margin-top: 6px; line-height: 1.6; }
 
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-    }
+    /* Onglets type de bien */
+    .tabs { display: flex; gap: 0; margin-bottom: 1.25rem; background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    .tab-btn { flex: 1; padding: 14px 12px; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-sec); background: transparent; border: none; cursor: pointer; transition: all 0.15s; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--accent-light); }
+    .tab-btn:not(.active):hover { background: var(--surface-alt); }
 
-    /* ── En-tête ── */
-    .page-header {
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .page-header .eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .page-header h1 {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 26px;
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.25;
-    }
-    .page-header p {
-      font-size: 14px;
-      color: var(--text-sec);
-      margin-top: 6px;
-      line-height: 1.6;
-    }
-
-    /* ── Carte formulaire ── */
-    .card {
-      background: var(--surface);
-      border-radius: 12px;
-      border: 0.5px solid var(--border);
-      box-shadow: var(--shadow);
-      padding: 1.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .card-title {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+    /* Cartes */
+    .card { background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.25rem; }
+    .card-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: 1 / -1; }
-
-    label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-sec);
-      letter-spacing: 0.01em;
-    }
-
-    input[type="number"], select {
-      height: 42px;
-      padding: 0 12px;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      background: var(--surface-alt);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius);
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      width: 100%;
-      -moz-appearance: textfield;
-    }
+    label { font-size: 12px; font-weight: 500; color: var(--text-sec); letter-spacing: 0.01em; }
+    input[type="number"], select { height: 42px; padding: 0 12px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--surface-alt); border: 1px solid var(--border-strong); border-radius: var(--radius); outline: none; transition: border-color 0.15s, box-shadow 0.15s; width: 100%; -moz-appearance: textfield; }
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-    input[type="number"]:focus, select:focus {
-      border-color: var(--accent-mid);
-      box-shadow: 0 0 0 3px rgba(42,120,214,0.12);
-      background: #fff;
-    }
-
-    .toggle-group {
-      display: flex;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius);
-      overflow: hidden;
-      height: 42px;
-    }
-    .toggle-btn {
-      flex: 1;
-      font-size: 13px;
-      font-weight: 500;
-      font-family: 'Inter', sans-serif;
-      color: var(--text-sec);
-      background: var(--surface-alt);
-      border: none;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .toggle-btn.active {
-      background: var(--accent);
-      color: #fff;
-    }
+    input[type="number"]:focus, select:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(42,120,214,0.12); background: #fff; }
+    .toggle-group { display: flex; border: 1px solid var(--border-strong); border-radius: var(--radius); overflow: hidden; height: 42px; }
+    .toggle-btn { flex: 1; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-sec); background: var(--surface-alt); border: none; cursor: pointer; transition: all 0.15s; }
+    .toggle-btn.active { background: var(--accent); color: #fff; }
     .toggle-btn:not(.active):hover { background: #eee; }
 
-    .hint-box {
-      padding: 10px 14px;
-      background: var(--accent-light);
-      border-left: 3px solid var(--accent-mid);
-      border-radius: 0 6px 6px 0;
-      font-size: 13px;
-      color: var(--accent);
-      margin-top: 2px;
-      line-height: 1.5;
-    }
+    .hint-box { padding: 10px 14px; background: var(--accent-light); border-left: 3px solid var(--accent-mid); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--accent); margin-top: 2px; line-height: 1.5; }
     .hint-box strong { font-weight: 600; }
 
-    /* ── Résultats ── */
-    .result-card {
-      background: var(--surface);
-      border-radius: 12px;
-      border: 0.5px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 1.25rem;
-    }
+    .info-box { padding: 10px 14px; background: var(--amber-light); border-left: 3px solid #c08000; border-radius: 0 6px 6px 0; font-size: 12.5px; color: var(--amber); margin-top: 12px; line-height: 1.6; }
+    .info-box strong { font-weight: 600; }
 
-    .total-header {
-      text-align: center;
-      padding: 1.75rem 1.5rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, #f8f8f6 0%, #fff 100%);
-    }
-    .total-eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .total-amount {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 44px;
-      font-weight: 500;
-      color: var(--accent);
-      line-height: 1.1;
-    }
-    .total-sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      margin-left: 6px;
-    }
+    /* Résultats */
+    .result-card { background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.25rem; }
+    .total-header { text-align: center; padding: 1.75rem 1.5rem 1.5rem; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #f8f8f6 0%, #fff 100%); }
+    .total-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .total-amount { font-family: 'Lora', Georgia, serif; font-size: 44px; font-weight: 500; color: var(--accent); line-height: 1.1; }
+    .total-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .tag { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; margin-left: 6px; }
     .tag-np { background: var(--accent-light); color: var(--accent); }
     .tag-pp { background: var(--green-light); color: var(--green); }
 
-    /* ── Graphique + légende ── */
-    .chart-section {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 1.5rem;
-      padding: 1.5rem;
-      align-items: center;
-    }
+    .chart-section { display: grid; grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem; align-items: center; }
     .pie-wrap { position: relative; width: 200px; height: 200px; }
-
     .legend { display: flex; flex-direction: column; gap: 10px; }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      background: var(--surface-alt);
-      border: 0.5px solid var(--border);
-    }
+    .legend-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; background: var(--surface-alt); border: 0.5px solid var(--border); }
     .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
     .legend-label { font-size: 12px; color: var(--text-sec); flex: 1; line-height: 1.3; }
     .legend-val { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; }
     .legend-pct { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
 
-    /* ── Détail ── */
-    .detail-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0.9rem 1.5rem;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--accent-mid);
-      cursor: pointer;
-      border-top: 1px solid var(--border);
-      user-select: none;
-      transition: background 0.1s;
-    }
+    /* Détail */
+    .detail-toggle { display: flex; align-items: center; gap: 8px; padding: 0.9rem 1.5rem; font-size: 13px; font-weight: 500; color: var(--accent-mid); cursor: pointer; border-top: 1px solid var(--border); user-select: none; transition: background 0.1s; }
     .detail-toggle:hover { background: var(--surface-alt); }
-    .chevron {
-      width: 16px; height: 16px;
-      border-right: 2px solid var(--accent-mid);
-      border-bottom: 2px solid var(--accent-mid);
-      transform: rotate(45deg);
-      transition: transform 0.2s;
-      margin-bottom: 2px;
-    }
+    .chevron { width: 16px; height: 16px; border-right: 2px solid var(--accent-mid); border-bottom: 2px solid var(--accent-mid); transform: rotate(45deg); transition: transform 0.2s; margin-bottom: 2px; }
     .chevron.open { transform: rotate(-135deg); margin-bottom: -2px; }
-
     .detail-panel { display: none; }
     .detail-panel.open { display: block; }
-
-    .section-header {
-      padding: 7px 1.5rem;
-      background: var(--surface-alt);
-      border-top: 1px solid var(--border);
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
+    .section-header { padding: 7px 1.5rem; background: var(--surface-alt); border-top: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
     table { width: 100%; border-collapse: collapse; }
-    thead th {
-      padding: 8px 1.5rem;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      text-align: left;
-      background: var(--surface-alt);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    tbody td {
-      padding: 9px 1.5rem;
-      font-size: 13px;
-      color: var(--text);
-      border-bottom: 1px solid var(--border);
-    }
+    thead th { padding: 8px 1.5rem; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; text-align: left; background: var(--surface-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    tbody td { padding: 9px 1.5rem; font-size: 13px; color: var(--text); border-bottom: 1px solid var(--border); }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr.sub td { color: var(--text-sec); padding-left: 2.5rem; font-size: 12.5px; }
     tbody tr.subtotal td { font-weight: 600; background: #fafafa; }
     tbody tr.total-row td { font-weight: 700; background: var(--accent-light); color: var(--accent); font-size: 14px; }
     .right { text-align: right; }
 
-    .bareme-note {
-      padding: 10px 1.5rem;
-      background: var(--amber-light);
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--amber);
-      line-height: 1.6;
-    }
+    .bareme-note { padding: 10px 1.5rem; background: var(--amber-light); border-top: 1px solid var(--border); font-size: 12px; color: var(--amber); line-height: 1.6; }
+    .parts-note { padding: 10px 1.5rem; background: var(--violet-light); border-top: 1px solid var(--border); font-size: 12px; color: var(--violet); line-height: 1.6; }
+    .parts-note strong { font-weight: 600; }
 
-    /* ── État vide ── */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .empty-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-      opacity: 0.3;
-    }
+    .empty-state { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
 
-    /* ── Pied ── */
-    .footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      line-height: 1.7;
-    }
+    .footer { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); line-height: 1.7; }
 
     @media (max-width: 560px) {
       .form-grid { grid-template-columns: 1fr; }
@@ -344,25 +107,31 @@
       .chart-section { grid-template-columns: 1fr; }
       .pie-wrap { width: 180px; height: 180px; margin: 0 auto; }
       .total-amount { font-size: 34px; }
+      .tabs { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-
 <div class="container">
 
   <div class="page-header">
     <div class="eyebrow">Ingénierie patrimoniale</div>
-    <h1>Simulateur de frais de donation immobilière</h1>
-    <p>Calcul des émoluments du notaire, taxe de publicité foncière, contribution de sécurité immobilière et frais annexes — donations en pleine propriété ou en nue-propriété (art. 669 CGI).</p>
+    <h1>Simulateur de frais de donation</h1>
+    <p>Calcul des émoluments du notaire, taxes et contributions — biens immobiliers et parts sociales, en pleine propriété ou en nue-propriété (art. 669 CGI).</p>
+  </div>
+
+  <!-- Onglets type de bien -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-immo" onclick="setAsset('immo')">🏠 Bien immobilier</button>
+    <button class="tab-btn" id="tab-parts" onclick="setAsset('parts')">🏢 Parts sociales</button>
   </div>
 
   <!-- Formulaire -->
   <div class="card">
-    <div class="card-title">Paramètres de la donation</div>
+    <div class="card-title" id="form-title">Paramètres de la donation — bien immobilier</div>
     <div class="form-grid">
       <div class="form-group full">
-        <label>Valeur du bien en pleine propriété (€)</label>
+        <label id="label-valeur">Valeur du bien en pleine propriété (€)</label>
         <input type="number" id="valeur" placeholder="Exemple : 350 000" min="0" step="1000" oninput="calcul()">
       </div>
       <div class="form-group">
@@ -378,6 +147,11 @@
       </div>
     </div>
     <div id="np-hint" style="margin-top:12px; display:none;"></div>
+    <div id="parts-info" style="display:none;">
+      <div class="info-box">
+        <strong>À noter :</strong> la donation de parts sociales devra être suivie d'une modification des statuts de la société et de la publication de cette modification dans un support d'annonces légales (JAL). Ces frais complémentaires ne sont pas inclus dans la présente simulation.
+      </div>
+    </div>
   </div>
 
   <!-- Zone résultats -->
@@ -393,7 +167,7 @@
 
   <div class="footer">
     Simulateur à titre indicatif — les montants réels peuvent varier selon les actes et la situation particulière.<br>
-    Barème des émoluments notariaux en vigueur · Taxe de publicité foncière 0,60 % · Barème art. 669 CGI (inchangé depuis 2004).<br>
+    Barèmes des émoluments notariaux en vigueur · Taxe de publicité foncière 0,60 % · Barème art. 669 CGI.<br>
     <strong>Document réservé à l'usage professionnel interne.</strong>
   </div>
 
@@ -401,6 +175,7 @@
 
 <script>
   let typeD = 'PP';
+  let typeAsset = 'immo';
   let pieChart = null;
 
   const BAREME_669 = [
@@ -415,9 +190,37 @@
     { maxAge: 200, usufruit: 10, np: 90 },
   ];
 
+  const BAREME_IMMO = [
+    { label: '0 à 6 500 €',       min: 0,     max: 6500,    taux: 0.04837 },
+    { label: '6 500 à 17 000 €',  min: 6500,  max: 17000,   taux: 0.01995 },
+    { label: '17 000 à 60 000 €', min: 17000, max: 60000,   taux: 0.01330 },
+    { label: '> 60 000 €',        min: 60000, max: Infinity, taux: 0.00998 },
+  ];
+
+  const BAREME_PARTS = [
+    { label: '0 à 6 500 €',       min: 0,     max: 6500,    taux: 0.02322 },
+    { label: '6 500 à 17 000 €',  min: 6500,  max: 17000,   taux: 0.00958 },
+    { label: '17 000 à 60 000 €', min: 17000, max: 60000,   taux: 0.00639 },
+    { label: '> 60 000 €',        min: 60000, max: Infinity, taux: 0.00479 },
+  ];
+
   function getNP(age) {
-    for (let b of BAREME_669) { if (age <= b.maxAge) return { np: b.np, usufruit: b.usufruit }; }
-    return { np: 90, usufruit: 10 };
+    for (let b of BAREME_669) { if (age <= b.maxAge) return { np: b.np, usufruit: b.usufruit, maxAge: b.maxAge }; }
+    return { np: 90, usufruit: 10, maxAge: 200 };
+  }
+
+  function setAsset(a) {
+    typeAsset = a;
+    document.getElementById('tab-immo').classList.toggle('active', a === 'immo');
+    document.getElementById('tab-parts').classList.toggle('active', a === 'parts');
+    document.getElementById('form-title').textContent = a === 'immo'
+      ? 'Paramètres de la donation — bien immobilier'
+      : 'Paramètres de la donation — parts sociales';
+    document.getElementById('label-valeur').textContent = a === 'immo'
+      ? 'Valeur du bien en pleine propriété (€)'
+      : 'Valeur des parts en pleine propriété (€)';
+    document.getElementById('parts-info').style.display = a === 'parts' ? '' : 'none';
+    calcul();
   }
 
   function setType(t) {
@@ -429,24 +232,13 @@
     calcul();
   }
 
-  function fmt(n) {
-    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(n));
-  }
-  function fmtD(n) {
-    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
-  }
+  function fmt(n) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(n)); }
+  function fmtD(n) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
   function pct(part, total) { return ((part / total) * 100).toFixed(1) + ' %'; }
 
-  function calcEmoluments(assiette) {
-    const tranches = [
-      { label: '0 à 6 500 €', min: 0, max: 6500, taux: 0.04837 },
-      { label: '6 500 à 17 000 €', min: 6500, max: 17000, taux: 0.01995 },
-      { label: '17 000 à 60 000 €', min: 17000, max: 60000, taux: 0.01330 },
-      { label: '> 60 000 €', min: 60000, max: Infinity, taux: 0.00998 },
-    ];
-    let em = 0;
-    let details = [];
-    for (let t of tranches) {
+  function calcEmoluments(assiette, bareme) {
+    let em = 0, details = [];
+    for (let t of bareme) {
       if (assiette <= t.min) break;
       let base = Math.min(assiette, t.max) - t.min;
       let montant = base * t.taux;
@@ -462,12 +254,12 @@
     const zone = document.getElementById('result-zone');
     const hintEl = document.getElementById('np-hint');
 
+    // Hint barème 669 (sans la tranche entre parenthèses)
     if (typeD === 'NP' && vpp > 0 && age > 0) {
       const bar = getNP(age);
       const vnp = vpp * bar.np / 100;
-      const tMin = bar.maxAge <= 20 ? 1 : bar.maxAge - 9;
       hintEl.style.display = '';
-      hintEl.innerHTML = `<div class="hint-box"><strong>Barème art. 669 CGI</strong> — Donateur âgé de ${age} ans (tranche ${tMin}–${bar.maxAge} ans) :<br>Usufruit = <strong>${bar.usufruit} %</strong> · Nue-propriété = <strong>${bar.np} %</strong><br>Valeur NP = ${fmt(vpp)} × ${bar.np} % = <strong>${fmt(vnp)}</strong></div>`;
+      hintEl.innerHTML = `<div class="hint-box"><strong>Barème art. 669 CGI</strong> — Donateur âgé de ${age} ans :<br>Usufruit = <strong>${bar.usufruit} %</strong> · Nue-propriété = <strong>${bar.np} %</strong><br>Valeur NP = ${fmt(vpp)} × ${bar.np} % = <strong>${fmt(vnp)}</strong></div>`;
     } else if (typeD === 'NP') {
       hintEl.style.display = 'none';
     }
@@ -476,17 +268,16 @@
       zone.innerHTML = `<div class="result-card"><div class="empty-state"><div class="empty-icon">⚖️</div><strong>Aucun calcul effectué</strong><br>Saisissez la valeur du bien ci-dessus pour obtenir l'estimation des frais.</div></div>`;
       return;
     }
-
     if (typeD === 'NP' && age <= 0) {
       zone.innerHTML = `<div class="result-card"><div class="empty-state"><div class="empty-icon">👤</div><strong>Âge du donateur requis</strong><br>Indiquez l'âge du donateur pour calculer la valeur de la nue-propriété.</div></div>`;
       return;
     }
 
+    // Calcul des assiettes
     let assiette_emol = vpp;
-    let assiette_tpf = vpp;
-    let assiette_csi = vpp;
-    let npPct = 100;
-    let npVal = vpp;
+    let assiette_tpf  = vpp;
+    let assiette_csi  = vpp;
+    let npPct = 100, npVal = vpp;
 
     if (typeD === 'NP') {
       const bar = getNP(age);
@@ -496,25 +287,33 @@
       assiette_csi = npVal;
     }
 
-    const { em: emolBrut, details: emolDetails } = calcEmoluments(assiette_emol);
-    const tva = emolBrut * 0.20;
-    const emolTTC = emolBrut + tva;
-    const tpf = assiette_tpf * 0.006;
-    const fraisRecouv = tpf * 0.0237;
-    const csi = assiette_csi * 0.001;
-    const debours = 300;
-    const total = emolTTC + tpf + fraisRecouv + csi + debours;
+    const bareme = typeAsset === 'immo' ? BAREME_IMMO : BAREME_PARTS;
+    const { em: emolBrut, details: emolDetails } = calcEmoluments(assiette_emol, bareme);
+    const tva      = emolBrut * 0.20;
+    const emolTTC  = emolBrut + tva;
+    const debours  = 300; // TTC — estimation forfaitaire
 
+    let tpf = 0, fraisRecouv = 0, csi = 0;
+    if (typeAsset === 'immo') {
+      tpf         = assiette_tpf * 0.006;
+      fraisRecouv = tpf * 0.0237;
+      csi         = assiette_csi * 0.001;
+    }
+
+    const total = emolTTC + tpf + fraisRecouv + csi + debours;
     const valTransmise = typeD === 'NP' ? npVal : vpp;
     const pctTransmis = ((total / valTransmise) * 100).toFixed(2);
 
-    const segments = [
+    // Segments camembert
+    let segments = [
       { label: 'Émoluments TTC', val: emolTTC, color: '#1a4f8c' },
-      { label: 'Taxe de publicité foncière', val: tpf, color: '#0f6e56' },
-      { label: 'Frais recouvrement & assiette', val: fraisRecouv, color: '#c08000' },
-      { label: 'Contrib. sécurité immobilière', val: csi, color: '#4a3aa7' },
-      { label: 'Débours forfaitaires', val: debours, color: '#888780' },
     ];
+    if (typeAsset === 'immo') {
+      segments.push({ label: 'Taxe de publicité foncière', val: tpf, color: '#0f6e56' });
+      segments.push({ label: 'Frais recouvrement & assiette', val: fraisRecouv, color: '#c08000' });
+      segments.push({ label: 'Contrib. sécurité immobilière', val: csi, color: '#4a3aa7' });
+    }
+    segments.push({ label: 'Débours forfaitaires (TTC)', val: debours, color: '#888780' });
 
     const tagHTML = typeD === 'NP'
       ? `<span class="tag tag-np">Nue-propriété · ${npPct} %</span>`
@@ -535,10 +334,33 @@
         <td class="right">${fmtD(d.montant)}</td>
       </tr>`).join('');
 
-    const baremeNote = typeD === 'NP' ? `
+    // Tableau taxes (immo uniquement)
+    const taxesHTML = typeAsset === 'immo' ? `
+      <div class="section-header">Droits & taxes — assiette : valeur ${typeD === 'NP' ? 'nue-propriété (' + fmt(npVal) + ')' : 'pleine propriété (' + fmt(vpp) + ')'}</div>
+      <table>
+        <thead><tr><th>Poste</th><th class="right">Assiette</th><th class="right">Taux</th><th class="right">Montant</th></tr></thead>
+        <tbody>
+          <tr><td>Taxe de publicité foncière</td><td class="right">${fmt(assiette_tpf)}</td><td class="right">0,60 %</td><td class="right">${fmtD(tpf)}</td></tr>
+          <tr class="sub"><td>Frais recouvrement & assiette</td><td class="right">${fmtD(tpf)}</td><td class="right">2,37 %</td><td class="right">${fmtD(fraisRecouv)}</td></tr>
+          <tr><td>Contribution sécurité immobilière</td><td class="right">${fmt(assiette_csi)}</td><td class="right">0,10 %</td><td class="right">${fmtD(csi)}</td></tr>
+        </tbody>
+      </table>` : '';
+
+    // Notes spécifiques
+    const baremeNoteImmo = (typeAsset === 'immo' && typeD === 'NP') ? `
       <div class="bareme-note">
-        <strong>Note sur l'assiette :</strong> les émoluments du notaire sont calculés sur la valeur en pleine propriété (${fmt(vpp)}) conformément à la réglementation, même en cas de donation de la seule nue-propriété. En revanche, la taxe de publicité foncière et la contribution de sécurité immobilière sont assises sur la valeur de la nue-propriété transmise (${fmt(npVal)}).
+        <strong>Note sur l'assiette :</strong> les émoluments du notaire sont calculés sur la valeur en pleine propriété (${fmt(vpp)}), même en cas de donation de la seule nue-propriété. La taxe de publicité foncière et la contribution de sécurité immobilière sont en revanche assises sur la valeur de la nue-propriété transmise (${fmt(npVal)}).
       </div>` : '';
+
+    const partsNoteBottom = typeAsset === 'parts' ? `
+      <div class="parts-note">
+        <strong>Formalités complémentaires :</strong> la donation de parts sociales implique une modification des statuts de la société et la publication de cette modification dans un support d'annonces légales (JAL). Ces frais, variables selon la société et le département, ne sont pas inclus dans la présente simulation.
+      </div>` : '';
+
+    const deboursNote = `
+      <div class="bareme-note" style="background:var(--gray-light, #f1efe8); color:var(--gray, #5f5e5a); border-color: #aaa;">
+        <strong>Débours forfaitaires :</strong> le montant de 300 € est une estimation forfaitaire TTC. Les débours réels (frais de recherches, documents administratifs, etc.) varient selon chaque dossier.
+      </div>`;
 
     zone.innerHTML = `
       <div class="result-card">
@@ -549,11 +371,11 @@
         </div>
         <div class="chart-section">
           <div class="pie-wrap">
-            <canvas id="pieChart" role="img" aria-label="Répartition des frais de donation entre émoluments, taxes et contributions"></canvas>
+            <canvas id="pieChart" role="img" aria-label="Répartition des frais de donation"></canvas>
           </div>
           <div class="legend">${legendHTML}</div>
         </div>
-        <div class="detail-toggle" onclick="toggleDetail(this)">
+        <div class="detail-toggle" onclick="toggleDetail()">
           <div class="chevron" id="chevron"></div>
           Voir le détail des calculs
         </div>
@@ -568,18 +390,17 @@
               <tr class="subtotal"><td>Émoluments TTC</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(emolTTC)}</td></tr>
             </tbody>
           </table>
-          <div class="section-header">Droits & taxes — assiette : valeur ${typeD === 'NP' ? 'nue-propriété (' + fmt(npVal) + ')' : 'pleine propriété (' + fmt(vpp) + ')'}</div>
+          ${taxesHTML}
           <table>
-            <thead><tr><th>Poste</th><th class="right">Assiette</th><th class="right">Taux</th><th class="right">Montant</th></tr></thead>
+            <thead><tr><th>Poste</th><th class="right">Détail</th><th class="right"></th><th class="right">Montant</th></tr></thead>
             <tbody>
-              <tr><td>Taxe de publicité foncière</td><td class="right">${fmt(assiette_tpf)}</td><td class="right">0,60 %</td><td class="right">${fmtD(tpf)}</td></tr>
-              <tr class="sub"><td>Frais recouvrement & assiette</td><td class="right">${fmtD(tpf)}</td><td class="right">2,37 %</td><td class="right">${fmtD(fraisRecouv)}</td></tr>
-              <tr><td>Contribution sécurité immobilière</td><td class="right">${fmt(assiette_csi)}</td><td class="right">0,10 %</td><td class="right">${fmtD(csi)}</td></tr>
-              <tr><td>Débours forfaitaires</td><td class="right">—</td><td class="right">forfait</td><td class="right">${fmtD(debours)}</td></tr>
+              <tr><td>Débours forfaitaires (TTC)</td><td class="right">estimation</td><td class="right">forfait</td><td class="right">${fmtD(debours)}</td></tr>
               <tr class="total-row"><td>Total frais</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(total)}</td></tr>
             </tbody>
           </table>
-          ${baremeNote}
+          ${baremeNoteImmo}
+          ${deboursNote}
+          ${partsNoteBottom}
         </div>
       </div>`;
 
@@ -589,35 +410,19 @@
       type: 'doughnut',
       data: {
         labels: segments.map(s => s.label),
-        datasets: [{
-          data: segments.map(s => Math.round(s.val)),
-          backgroundColor: segments.map(s => s.color),
-          borderWidth: 3,
-          borderColor: '#ffffff',
-          hoverOffset: 8
-        }]
+        datasets: [{ data: segments.map(s => Math.round(s.val)), backgroundColor: segments.map(s => s.color), borderWidth: 3, borderColor: '#ffffff', hoverOffset: 8 }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        cutout: '60%',
+        responsive: true, maintainAspectRatio: true, cutout: '60%',
         plugins: {
           legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => {
-                const v = ctx.parsed;
-                const t2 = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                return ` ${ctx.label} : ${fmt(v)} (${((v / t2) * 100).toFixed(1)} %)`;
-              }
-            }
-          }
+          tooltip: { callbacks: { label: c => { const v = c.parsed; const t2 = c.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return ` ${c.label} : ${fmt(v)} (${((v/t2)*100).toFixed(1)} %)`; } } }
         }
       }
     });
   }
 
-  function toggleDetail(el) {
+  function toggleDetail() {
     const panel = document.getElementById('detail-panel');
     const ch = document.getElementById('chevron');
     const open = panel.classList.toggle('open');
