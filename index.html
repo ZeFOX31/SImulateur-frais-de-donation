@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulateur de frais de donation</title>
+  <title>Simulateur de donation — Ingénierie patrimoniale</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500&display=swap" rel="stylesheet">
@@ -21,30 +21,36 @@
       --radius: 8px; --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
     }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
-    .container { max-width: 760px; margin: 0 auto; }
+    .container { max-width: 900px; margin: 0 auto; }
 
-    /* En-tête */
     .page-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
     .page-header .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
     .page-header h1 { font-family: 'Lora', Georgia, serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1.25; }
     .page-header p { font-size: 14px; color: var(--text-sec); margin-top: 6px; line-height: 1.6; }
 
-    /* Onglets type de bien */
-    .tabs { display: flex; gap: 0; margin-bottom: 1.25rem; background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    .main-nav { display: flex; background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.5rem; }
+    .main-nav-btn { flex: 1; padding: 16px 12px; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-sec); background: transparent; border: none; cursor: pointer; transition: all 0.15s; border-bottom: 3px solid transparent; }
+    .main-nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--accent-light); font-weight: 600; }
+    .main-nav-btn:not(.active):hover { background: var(--surface-alt); }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .tabs { display: flex; margin-bottom: 1.25rem; background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
     .tab-btn { flex: 1; padding: 14px 12px; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-sec); background: transparent; border: none; cursor: pointer; transition: all 0.15s; border-bottom: 3px solid transparent; }
     .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--accent-light); }
     .tab-btn:not(.active):hover { background: var(--surface-alt); }
 
-    /* Cartes */
     .card { background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.25rem; }
     .card-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; }
+
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: 1 / -1; }
     label { font-size: 12px; font-weight: 500; color: var(--text-sec); letter-spacing: 0.01em; }
-    input[type="number"], select { height: 42px; padding: 0 12px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--surface-alt); border: 1px solid var(--border-strong); border-radius: var(--radius); outline: none; transition: border-color 0.15s, box-shadow 0.15s; width: 100%; -moz-appearance: textfield; }
+    input[type="number"], input[type="text"], select { height: 42px; padding: 0 12px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--surface-alt); border: 1px solid var(--border-strong); border-radius: var(--radius); outline: none; transition: border-color 0.15s, box-shadow 0.15s; width: 100%; -moz-appearance: textfield; }
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-    input[type="number"]:focus, select:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(42,120,214,0.12); background: #fff; }
+    input:focus, select:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(42,120,214,0.12); background: #fff; }
     .toggle-group { display: flex; border: 1px solid var(--border-strong); border-radius: var(--radius); overflow: hidden; height: 42px; }
     .toggle-btn { flex: 1; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-sec); background: var(--surface-alt); border: none; cursor: pointer; transition: all 0.15s; }
     .toggle-btn.active { background: var(--accent); color: #fff; }
@@ -52,11 +58,10 @@
 
     .hint-box { padding: 10px 14px; background: var(--accent-light); border-left: 3px solid var(--accent-mid); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--accent); margin-top: 2px; line-height: 1.5; }
     .hint-box strong { font-weight: 600; }
-
     .info-box { padding: 10px 14px; background: var(--amber-light); border-left: 3px solid #c08000; border-radius: 0 6px 6px 0; font-size: 12.5px; color: var(--amber); margin-top: 12px; line-height: 1.6; }
     .info-box strong { font-weight: 600; }
 
-    /* Résultats */
+    /* Page 1 */
     .result-card { background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.25rem; }
     .total-header { text-align: center; padding: 1.75rem 1.5rem 1.5rem; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #f8f8f6 0%, #fff 100%); }
     .total-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
@@ -65,7 +70,6 @@
     .tag { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; margin-left: 6px; }
     .tag-np { background: var(--accent-light); color: var(--accent); }
     .tag-pp { background: var(--green-light); color: var(--green); }
-
     .chart-section { display: grid; grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem; align-items: center; }
     .pie-wrap { position: relative; width: 200px; height: 200px; }
     .legend { display: flex; flex-direction: column; gap: 10px; }
@@ -74,8 +78,6 @@
     .legend-label { font-size: 12px; color: var(--text-sec); flex: 1; line-height: 1.3; }
     .legend-val { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; }
     .legend-pct { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
-
-    /* Détail */
     .detail-toggle { display: flex; align-items: center; gap: 8px; padding: 0.9rem 1.5rem; font-size: 13px; font-weight: 500; color: var(--accent-mid); cursor: pointer; border-top: 1px solid var(--border); user-select: none; transition: background 0.1s; }
     .detail-toggle:hover { background: var(--surface-alt); }
     .chevron { width: 16px; height: 16px; border-right: 2px solid var(--accent-mid); border-bottom: 2px solid var(--accent-mid); transform: rotate(45deg); transition: transform 0.2s; margin-bottom: 2px; }
@@ -91,23 +93,79 @@
     tbody tr.subtotal td { font-weight: 600; background: #fafafa; }
     tbody tr.total-row td { font-weight: 700; background: var(--accent-light); color: var(--accent); font-size: 14px; }
     .right { text-align: right; }
-
     .bareme-note { padding: 10px 1.5rem; background: var(--amber-light); border-top: 1px solid var(--border); font-size: 12px; color: var(--amber); line-height: 1.6; }
     .parts-note { padding: 10px 1.5rem; background: var(--violet-light); border-top: 1px solid var(--border); font-size: 12px; color: var(--violet); line-height: 1.6; }
     .parts-note strong { font-weight: 600; }
-
     .empty-state { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
     .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
+    .donor-age-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .donor-age-block { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .donor-age-block-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
 
-    .footer { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); line-height: 1.7; }
+    /* Page 2 */
+    .bien-block { background: var(--surface-alt); border: 1.5px solid var(--border-strong); border-radius: 10px; padding: 1.25rem; margin-bottom: 12px; }
+    .bien-block-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .bien-block-label { font-size: 13px; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+    .bien-num-badge { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; }
 
-    @media (max-width: 560px) {
+    .children-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .child-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+    .donor-block { background: var(--surface-alt); border-radius: 10px; border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 10px; }
+    .donor-block:last-child { margin-bottom: 0; }
+    .donor-block-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; border: none; transition: all 0.15s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #15407a; }
+    .btn-secondary { background: var(--surface-alt); color: var(--text-sec); border: 1px solid var(--border-strong); }
+    .btn-secondary:hover { background: #eee; }
+    .btn-danger { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; font-size: 12px; padding: 6px 10px; }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-export { background: #0f6e56; color: #fff; }
+    .btn-export:hover { background: #0a5240; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+
+    .donor-checkboxes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+    .donor-check-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-sec); cursor: pointer; }
+    .donor-check-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+
+    /* Tableau synthèse */
+    .synth-wrap { overflow-x: auto; margin-bottom: 1.25rem; border-radius: 10px; border: 0.5px solid var(--border); box-shadow: var(--shadow); }
+    .synth-table { width: 100%; border-collapse: collapse; min-width: 400px; font-size: 12.5px; }
+    .synth-table th { padding: 9px 12px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 600; text-align: center; border: 1px solid rgba(255,255,255,0.15); white-space: nowrap; }
+    .synth-table th.row-header { background: #12396b; text-align: left; min-width: 200px; }
+    .synth-table th.th-frais { background: #854f0b; }
+    .synth-table th.th-total { background: #0a2d5e; }
+    .synth-table td { padding: 8px 12px; border: 1px solid var(--border); text-align: right; color: var(--text); vertical-align: middle; white-space: nowrap; }
+    .synth-table td.row-label { text-align: left; color: var(--text-sec); background: var(--surface-alt); white-space: normal; font-size: 12px; }
+    .synth-table td.row-label.category { font-weight: 700; color: var(--text); background: #eceae4; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 12px; }
+    .synth-table td.row-label.sub-label { padding-left: 22px; font-size: 11.5px; color: var(--text-muted); }
+    .synth-table tr.total-synth td { font-weight: 700; background: var(--accent-light); color: var(--accent); }
+    .synth-table tr.total-synth td.row-label { color: var(--accent); }
+    .synth-table td.zero { color: var(--text-muted); }
+    .synth-table td.green { color: var(--green); font-weight: 500; }
+    .synth-table td.frais-col { background: #fdf6ee; }
+    .synth-table td.total-col { background: #eef2fa; font-weight: 600; color: var(--accent); }
+    .synth-table td.total-col.row-label { text-align: left; }
+    .synth-table tr.total-synth td.frais-col,
+    .synth-table tr.total-synth td.total-col { background: var(--accent-light); color: var(--accent); }
+
+    .export-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border); box-shadow: var(--shadow); margin-bottom: 1.25rem; gap: 12px; flex-wrap: wrap; }
+    .export-bar-label { font-size: 13px; color: var(--text-sec); }
+    .export-bar-label strong { color: var(--text); }
+
+    .footer { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); line-height: 1.9; }
+    .footer .loca-credit { font-style: italic; color: #b0aba4; font-size: 10.5px; margin-top: 4px; }
+
+    @media (max-width: 600px) {
       .form-grid { grid-template-columns: 1fr; }
       .form-group.full { grid-column: auto; }
       .chart-section { grid-template-columns: 1fr; }
       .pie-wrap { width: 180px; height: 180px; margin: 0 auto; }
       .total-amount { font-size: 34px; }
-      .tabs { flex-direction: column; }
+      .main-nav, .tabs { flex-direction: column; }
+      .child-row { grid-template-columns: 1fr; }
+      .donor-age-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -116,318 +174,660 @@
 
   <div class="page-header">
     <div class="eyebrow">Ingénierie patrimoniale</div>
-    <h1>Simulateur de frais de donation</h1>
-    <p>Calcul des émoluments du notaire, taxes et contributions — biens immobiliers et parts sociales, en pleine propriété ou en nue-propriété (art. 669 CGI).</p>
+    <h1>Simulateur de donation</h1>
+    <p>Calcul des frais notariaux, droits de mutation et simulation globale — biens immobiliers et parts sociales, donations en pleine propriété ou en nue-propriété.</p>
   </div>
 
-  <!-- Onglets type de bien -->
-  <div class="tabs">
-    <button class="tab-btn active" id="tab-immo" onclick="setAsset('immo')">🏠 Bien immobilier</button>
-    <button class="tab-btn" id="tab-parts" onclick="setAsset('parts')">🏢 Parts sociales</button>
+  <div class="main-nav">
+    <button class="main-nav-btn active" id="nav-frais" onclick="showPage('frais',this)">🧾 Simulateur de frais notariaux</button>
+    <button class="main-nav-btn" id="nav-simulation" onclick="showPage('simulation',this)">📊 Simulation globale de donation</button>
   </div>
 
-  <!-- Formulaire -->
-  <div class="card">
-    <div class="card-title" id="form-title">Paramètres de la donation — bien immobilier</div>
-    <div class="form-grid">
-      <div class="form-group full">
-        <label id="label-valeur">Valeur du bien en pleine propriété (€)</label>
-        <input type="number" id="valeur" placeholder="Exemple : 350 000" min="0" step="1000" oninput="calcul()">
-      </div>
-      <div class="form-group">
-        <label>Type de donation</label>
-        <div class="toggle-group">
-          <button class="toggle-btn active" id="btn-pp" onclick="setType('PP')">Pleine propriété</button>
-          <button class="toggle-btn" id="btn-np" onclick="setType('NP')">Nue-propriété</button>
+  <!-- PAGE 1 -->
+  <div class="page active" id="page-frais">
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-immo" onclick="setAsset('immo')">🏠 Bien immobilier</button>
+      <button class="tab-btn" id="tab-parts" onclick="setAsset('parts')">🏢 Parts sociales</button>
+    </div>
+    <div class="card">
+      <div class="card-title" id="form-title">Paramètres de la donation — bien immobilier</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label id="label-valeur">Valeur du bien en pleine propriété (€)</label>
+          <input type="number" id="valeur" placeholder="Exemple : 350 000" min="0" step="1000" oninput="calcul()">
+        </div>
+        <div class="form-group">
+          <label>Nombre de donateurs</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="btn-don1" onclick="setNbDonateurs(1)">1 donateur</button>
+            <button class="toggle-btn" id="btn-don2" onclick="setNbDonateurs(2)">2 donateurs</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Type de donation</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="btn-pp" onclick="setType('PP')">Pleine propriété</button>
+            <button class="toggle-btn" id="btn-np" onclick="setType('NP')">Nue-propriété</button>
+          </div>
         </div>
       </div>
-      <div class="form-group" id="age-group" style="display:none;">
-        <label>Âge du donateur (ans révolus)</label>
-        <input type="number" id="age" placeholder="Exemple : 62" min="1" max="120" oninput="calcul()">
+      <div id="age-section" style="display:none; margin-top:14px;">
+        <div class="donor-age-grid" id="age-grid"></div>
+      </div>
+      <div id="np-hint" style="margin-top:12px; display:none;"></div>
+      <div id="parts-info" style="display:none;">
+        <div class="info-box"><strong>À noter :</strong> la donation de parts sociales devra être suivie d'une modification des statuts et d'une publication dans un support d'annonces légales (JAL). Ces frais ne sont pas inclus dans cette simulation.</div>
       </div>
     </div>
-    <div id="np-hint" style="margin-top:12px; display:none;"></div>
-    <div id="parts-info" style="display:none;">
-      <div class="info-box">
-        <strong>À noter :</strong> la donation de parts sociales devra être suivie d'une modification des statuts de la société et de la publication de cette modification dans un support d'annonces légales (JAL). Ces frais complémentaires ne sont pas inclus dans la présente simulation.
-      </div>
+    <div id="result-zone">
+      <div class="result-card"><div class="empty-state"><div class="empty-icon">⚖️</div><strong>Aucun calcul effectué</strong><br>Saisissez la valeur du bien ci-dessus.</div></div>
     </div>
   </div>
 
-  <!-- Zone résultats -->
-  <div id="result-zone">
-    <div class="result-card">
-      <div class="empty-state">
-        <div class="empty-icon">⚖️</div>
-        <strong>Aucun calcul effectué</strong><br>
-        Saisissez la valeur du bien ci-dessus pour obtenir l'estimation des frais.
+  <!-- PAGE 2 -->
+  <div class="page" id="page-simulation">
+    <div class="card">
+      <div class="card-title">Donateur(s)</div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Nombre de donateurs</label>
+        <div class="toggle-group" style="max-width:300px;">
+          <button class="toggle-btn active" id="sg-d1" onclick="sgSetDonateurs(1)">1 donateur</button>
+          <button class="toggle-btn" id="sg-d2" onclick="sgSetDonateurs(2)">2 donateurs</button>
+        </div>
+      </div>
+      <div id="sg-donateurs-form"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Donataire(s) — enfant(s)</div>
+      <div id="sg-children-list" class="children-list"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" style="font-size:12px;padding:7px 12px;" onclick="sgAddChild()">+ Ajouter un enfant</button>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-title">Bien(s) à transmettre</div>
+      <div id="sg-biens-list"></div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-secondary" style="font-size:12px;padding:7px 12px;" onclick="sgAddBien()">+ Ajouter un bien</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <button class="btn btn-primary" onclick="sgCalculer()" style="width:100%;justify-content:center;padding:13px;font-size:14px;">Générer la simulation</button>
+    </div>
+    <div id="sg-result-zone"></div>
   </div>
 
   <div class="footer">
     Simulateur à titre indicatif — les montants réels peuvent varier selon les actes et la situation particulière.<br>
-    Barèmes des émoluments notariaux en vigueur · Taxe de publicité foncière 0,60 % · Barème art. 669 CGI.<br>
+    Barèmes des émoluments notariaux en vigueur · Barème DMTG ligne directe (art. 777 CGI) · Art. 669 CGI.<br>
     <strong>Document réservé à l'usage professionnel interne.</strong>
+    <div class="loca-credit">Ce simulateur a été établi par LOCA à destination du tout meilleur service d'ingénierie patrimoniale de France.</div>
   </div>
 
 </div>
-
 <script>
-  let typeD = 'PP';
-  let typeAsset = 'immo';
-  let pieChart = null;
+// ═══════════════════════════════
+//  BARÈMES
+// ═══════════════════════════════
+const BAREME_669=[
+  {maxAge:20,usufruit:90,np:10},{maxAge:30,usufruit:80,np:20},
+  {maxAge:40,usufruit:70,np:30},{maxAge:50,usufruit:60,np:40},
+  {maxAge:60,usufruit:50,np:50},{maxAge:70,usufruit:40,np:60},
+  {maxAge:80,usufruit:30,np:70},{maxAge:90,usufruit:20,np:80},
+  {maxAge:200,usufruit:10,np:90},
+];
+const BAREME_IMMO=[
+  {label:'0 à 6 500 €',      min:0,    max:6500,    taux:0.04837},
+  {label:'6 500 à 17 000 €', min:6500, max:17000,   taux:0.01995},
+  {label:'17 000 à 60 000 €',min:17000,max:60000,   taux:0.01330},
+  {label:'> 60 000 €',       min:60000,max:Infinity, taux:0.00998},
+];
+const BAREME_PARTS=[
+  {label:'0 à 6 500 €',      min:0,    max:6500,    taux:0.02322},
+  {label:'6 500 à 17 000 €', min:6500, max:17000,   taux:0.00958},
+  {label:'17 000 à 60 000 €',min:17000,max:60000,   taux:0.00639},
+  {label:'> 60 000 €',       min:60000,max:Infinity, taux:0.00479},
+];
+const BAREME_DMTG=[
+  {max:8072,taux:0.05},{max:12109,taux:0.10},
+  {max:15932,taux:0.15},{max:552324,taux:0.20},
+  {max:902838,taux:0.30},{max:1805677,taux:0.40},
+  {max:Infinity,taux:0.45},
+];
 
-  const BAREME_669 = [
-    { maxAge: 20, usufruit: 90, np: 10 },
-    { maxAge: 30, usufruit: 80, np: 20 },
-    { maxAge: 40, usufruit: 70, np: 30 },
-    { maxAge: 50, usufruit: 60, np: 40 },
-    { maxAge: 60, usufruit: 50, np: 50 },
-    { maxAge: 70, usufruit: 40, np: 60 },
-    { maxAge: 80, usufruit: 30, np: 70 },
-    { maxAge: 90, usufruit: 20, np: 80 },
-    { maxAge: 200, usufruit: 10, np: 90 },
-  ];
+function getNP(age){for(let b of BAREME_669)if(age<=b.maxAge)return b;return BAREME_669[BAREME_669.length-1];}
+function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+function fmtD(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);}
+function pct(p,t){return((p/t)*100).toFixed(1)+' %';}
 
-  const BAREME_IMMO = [
-    { label: '0 à 6 500 €',       min: 0,     max: 6500,    taux: 0.04837 },
-    { label: '6 500 à 17 000 €',  min: 6500,  max: 17000,   taux: 0.01995 },
-    { label: '17 000 à 60 000 €', min: 17000, max: 60000,   taux: 0.01330 },
-    { label: '> 60 000 €',        min: 60000, max: Infinity, taux: 0.00998 },
-  ];
+function calcEmoluments(assiette,bareme){
+  let em=0,details=[];
+  for(let t of bareme){
+    if(assiette<=t.min)break;
+    let base=Math.min(assiette,t.max)-t.min,montant=base*t.taux;
+    em+=montant;details.push({label:'Tranche '+t.label,taux:(t.taux*100).toFixed(3)+' %',base,montant});
+  }
+  return{em,details};
+}
 
-  const BAREME_PARTS = [
-    { label: '0 à 6 500 €',       min: 0,     max: 6500,    taux: 0.02322 },
-    { label: '6 500 à 17 000 €',  min: 6500,  max: 17000,   taux: 0.00958 },
-    { label: '17 000 à 60 000 €', min: 17000, max: 60000,   taux: 0.00639 },
-    { label: '> 60 000 €',        min: 60000, max: Infinity, taux: 0.00479 },
-  ];
+function calcFraisParPart(vppPart,typeD,typeAsset,npPct){
+  const bareme=typeAsset==='immo'?BAREME_IMMO:BAREME_PARTS;
+  const{em:emolBrut}=calcEmoluments(vppPart,bareme);
+  const tva=emolBrut*0.20,emolTTC=emolBrut+tva,debours=300;
+  let tpf=0,fraisRecouv=0,csi=0;
+  if(typeAsset==='immo'){
+    const at=typeD==='NP'?vppPart*npPct/100:vppPart;
+    tpf=at*0.006;fraisRecouv=tpf*0.0237;csi=at*0.001;
+  }
+  return{emolBrut,tva,emolTTC,tpf,fraisRecouv,csi,debours,total:emolTTC+tpf+fraisRecouv+csi+debours};
+}
 
-  function getNP(age) {
-    for (let b of BAREME_669) { if (age <= b.maxAge) return { np: b.np, usufruit: b.usufruit, maxAge: b.maxAge }; }
-    return { np: 90, usufruit: 10, maxAge: 200 };
+// DMTG avec point de départ dans le barème (pour continuité entre biens)
+// previousTaxableBase = base taxable déjà imposée avant ce bien
+function calcDMTGIncremental(newBase, previousTaxableBase){
+  if(newBase<=0)return 0;
+  const totalBase=previousTaxableBase+newBase;
+  const droitsTotal=calcDMTGFull(totalBase);
+  const droitsPrev=calcDMTGFull(previousTaxableBase);
+  return Math.max(0,droitsTotal-droitsPrev);
+}
+function calcDMTGFull(base){
+  if(base<=0)return 0;
+  let droits=0,prev=0;
+  for(let t of BAREME_DMTG){
+    if(base<=prev)break;
+    droits+=(Math.min(base,t.max)-prev)*t.taux;
+    prev=t.max;
+  }
+  return droits;
+}
+
+// ═══════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════
+function showPage(p,btn){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.main-nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+
+// ═══════════════════════════════
+//  PAGE 1
+// ═══════════════════════════════
+let typeD='PP',typeAsset='immo',nbDonateurs=1,pieChart=null;
+
+function setNbDonateurs(n){nbDonateurs=n;document.getElementById('btn-don1').classList.toggle('active',n===1);document.getElementById('btn-don2').classList.toggle('active',n===2);renderAgeFields();calcul();}
+function setAsset(a){typeAsset=a;document.getElementById('tab-immo').classList.toggle('active',a==='immo');document.getElementById('tab-parts').classList.toggle('active',a==='parts');document.getElementById('form-title').textContent=a==='immo'?'Paramètres de la donation — bien immobilier':'Paramètres de la donation — parts sociales';document.getElementById('label-valeur').textContent=a==='immo'?'Valeur du bien en pleine propriété (€)':'Valeur des parts en pleine propriété (€)';document.getElementById('parts-info').style.display=a==='parts'?'':'none';calcul();}
+function setType(t){typeD=t;document.getElementById('btn-pp').classList.toggle('active',t==='PP');document.getElementById('btn-np').classList.toggle('active',t==='NP');document.getElementById('age-section').style.display=t==='NP'?'':'none';document.getElementById('np-hint').style.display='none';renderAgeFields();calcul();}
+function renderAgeFields(){
+  const grid=document.getElementById('age-grid');if(typeD!=='NP'){grid.innerHTML='';return;}
+  const existing=grid.querySelectorAll('input');const vals=Array.from(existing).map(i=>i.value);let html='';
+  for(let i=0;i<nbDonateurs;i++){html+=`<div class="donor-age-block"><div class="donor-age-block-title">${nbDonateurs===1?'Donateur':'Donateur '+(i+1)}</div><div class="form-group"><label>${nbDonateurs===1?'Âge du donateur (ans révolus)':`Âge du donateur ${i+1} (ans révolus)`}</label><input type="number" class="age-input" placeholder="Ex : 62" min="1" max="120" value="${vals[i]||''}" oninput="calcul()"></div></div>`;}
+  grid.innerHTML=html;
+}
+function getAges(){return Array.from(document.querySelectorAll('.age-input')).map(i=>parseInt(i.value)||0);}
+
+function calcul(){
+  const vpp=parseFloat(document.getElementById('valeur').value)||0;
+  const ages=getAges();const zone=document.getElementById('result-zone');const hintEl=document.getElementById('np-hint');
+  if(typeD==='NP'&&vpp>0){const va=ages.filter(a=>a>0);if(va.length>0){let lines=va.map((age,i)=>{const bar=getNP(age);const vnp=vpp/nbDonateurs*bar.np/100;const pfx=nbDonateurs>1?`<strong>Donateur ${i+1}</strong> (${age} ans) : `:`Donateur âgé de ${age} ans : `;return `${pfx}Usufruit ${bar.usufruit} % · NP ${bar.np} % → valeur NP de la part = <strong>${fmt(vnp)}</strong>`;});hintEl.style.display='';hintEl.innerHTML=`<div class="hint-box"><strong>Barème art. 669 CGI</strong><br>${lines.join('<br>')}</div>`;}else hintEl.style.display='none';}else hintEl.style.display='none';
+  if(vpp<=0){zone.innerHTML=`<div class="result-card"><div class="empty-state"><div class="empty-icon">⚖️</div><strong>Aucun calcul effectué</strong><br>Saisissez la valeur du bien.</div></div>`;return;}
+  if(typeD==='NP'&&ages.some(a=>a<=0)){zone.innerHTML=`<div class="result-card"><div class="empty-state"><div class="empty-icon">👤</div><strong>Âge(s) requis</strong><br>Indiquez l'âge de chaque donateur.</div></div>`;return;}
+  const vppPD=vpp/nbDonateurs;let totEB=0,totTva=0,totTTC=0,totTpf=0,totRecouv=0,totCsi=0;const debours=300;let allDet=[];
+  for(let i=0;i<nbDonateurs;i++){const age=ages[i]||0;const npPct=typeD==='NP'?getNP(age).np:100;const res=calcFraisParPart(vppPD,typeD,typeAsset,npPct);totEB+=res.emolBrut;totTva+=res.tva;totTTC+=res.emolTTC;totTpf+=res.tpf;totRecouv+=res.fraisRecouv;totCsi+=res.csi;const{em,details:rows}=calcEmoluments(vppPD,typeAsset==='immo'?BAREME_IMMO:BAREME_PARTS);allDet.push({i,vppPart:vppPD,npPct,emolBrut:em,tva:em*0.2,emolTTC:em*1.2,rows});}
+  const valT=typeD==='NP'?ages.reduce((s,age)=>s+vppPD*getNP(age).np/100,0):vpp;const total=totTTC+totTpf+totRecouv+totCsi+debours;
+  const segments=[{label:'Émoluments TTC',val:totTTC,color:'#1a4f8c'}];
+  if(typeAsset==='immo'){segments.push({label:'Taxe de publicité foncière',val:totTpf,color:'#0f6e56'});segments.push({label:'Frais recouvrement & assiette',val:totRecouv,color:'#c08000'});segments.push({label:'Contrib. sécurité immobilière',val:totCsi,color:'#4a3aa7'});}
+  segments.push({label:'Débours forfaitaires (TTC)',val:debours,color:'#888780'});
+  const tagHTML=typeD==='NP'?`<span class="tag tag-np">Nue-propriété</span>`:`<span class="tag tag-pp">Pleine propriété</span>`;
+  const tagDon=nbDonateurs===2?`<span class="tag" style="background:#f3e8ff;color:#6b21a8;margin-left:6px;">2 donateurs</span>`:'';
+  const legendHTML=segments.map(s=>`<div class="legend-item"><span class="legend-dot" style="background:${s.color};"></span><span class="legend-label">${s.label}</span><span class="legend-val">${fmt(s.val)}<span class="legend-pct">${pct(s.val,total)}</span></span></div>`).join('');
+  let emolHTML='';
+  for(let d of allDet){const lbl=nbDonateurs>1?`Donateur ${d.i+1} — part : ${fmt(d.vppPart)} PP`:`Assiette : ${fmt(d.vppPart)} (valeur PP)`;emolHTML+=`<div class="section-header">${lbl}</div><table><thead><tr><th>Tranche</th><th class="right">Base</th><th class="right">Taux</th><th class="right">Montant HT</th></tr></thead><tbody>${d.rows.map(r=>`<tr class="sub"><td>${r.label}</td><td class="right">${fmtD(r.base)}</td><td class="right">${r.taux}</td><td class="right">${fmtD(r.montant)}</td></tr>`).join('')}<tr class="subtotal"><td>Émoluments HT</td><td class="right"></td><td class="right">barème</td><td class="right">${fmtD(d.emolBrut)}</td></tr><tr class="sub"><td>TVA (20 %)</td><td class="right"></td><td class="right">20 %</td><td class="right">${fmtD(d.tva)}</td></tr><tr class="subtotal"><td>Émoluments TTC</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(d.emolTTC)}</td></tr></tbody></table>`;}
+  if(nbDonateurs>1)emolHTML+=`<div class="section-header" style="background:var(--accent-light);color:var(--accent);">Total émoluments cumulés</div><table><tbody><tr class="subtotal"><td>Total HT</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(totEB)}</td></tr><tr class="sub"><td>TVA totale</td><td class="right"></td><td class="right">20 %</td><td class="right">${fmtD(totTva)}</td></tr><tr class="subtotal"><td>Total TTC</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(totTTC)}</td></tr></tbody></table>`;
+  const taxesHTML=typeAsset==='immo'?`<div class="section-header">Droits & taxes — assiette valeur ${typeD==='NP'?'NP ('+fmt(valT)+')':'PP ('+fmt(vpp)+')'}</div><table><thead><tr><th>Poste</th><th class="right">Assiette</th><th class="right">Taux</th><th class="right">Montant</th></tr></thead><tbody><tr><td>Taxe de publicité foncière</td><td class="right">${fmt(valT)}</td><td class="right">0,60 %</td><td class="right">${fmtD(totTpf)}</td></tr><tr class="sub"><td>Frais recouvrement & assiette</td><td class="right">${fmtD(totTpf)}</td><td class="right">2,37 %</td><td class="right">${fmtD(totRecouv)}</td></tr><tr><td>Contribution sécurité immobilière</td><td class="right">${fmt(valT)}</td><td class="right">0,10 %</td><td class="right">${fmtD(totCsi)}</td></tr></tbody></table>`:'';
+  zone.innerHTML=`<div class="result-card"><div class="total-header"><div class="total-eyebrow">Estimation des frais totaux ${tagHTML}${tagDon}</div><div class="total-amount">${fmt(total)}</div><div class="total-sub">soit ${((total/valT)*100).toFixed(2)} % de la valeur transmise (${fmt(valT)})</div></div><div class="chart-section"><div class="pie-wrap"><canvas id="pieChart"></canvas></div><div class="legend">${legendHTML}</div></div><div class="detail-toggle" onclick="toggleDetail()"><div class="chevron" id="chevron"></div>Voir le détail des calculs</div><div class="detail-panel" id="detail-panel"><div class="section-header">Émoluments du notaire — barème par part de donateur</div>${emolHTML}${taxesHTML}<table><thead><tr><th>Poste</th><th class="right">Détail</th><th class="right"></th><th class="right">Montant</th></tr></thead><tbody><tr><td>Débours forfaitaires (TTC)</td><td class="right">estimation</td><td class="right">forfait</td><td class="right">${fmtD(debours)}</td></tr><tr class="total-row"><td>Total frais</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(total)}</td></tr></tbody></table>${nbDonateurs===2?`<div class="bareme-note"><strong>Calcul avec 2 donateurs :</strong> émoluments calculés séparément sur la part de chaque donateur (${fmt(vppPD)} chacun) puis cumulés.</div>`:''} ${typeD==='NP'?`<div class="bareme-note"><strong>Note assiette :</strong> émoluments assis sur la valeur PP. TPF et CSI assises sur la valeur NP transmise.</div>`:''}<div class="bareme-note" style="background:#f1efe8;color:#5f5e5a;"><strong>Débours forfaitaires :</strong> 300 € TTC estimatif. Les débours réels varient selon chaque dossier.</div>${typeAsset==='parts'?`<div class="parts-note"><strong>Formalités complémentaires :</strong> modification des statuts et publication JAL non incluses.</div>`:''}</div></div>`;
+  if(pieChart){pieChart.destroy();pieChart=null;}
+  const ctx=document.getElementById('pieChart').getContext('2d');
+  pieChart=new Chart(ctx,{type:'doughnut',data:{labels:segments.map(s=>s.label),datasets:[{data:segments.map(s=>Math.round(s.val)),backgroundColor:segments.map(s=>s.color),borderWidth:3,borderColor:'#ffffff',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:true,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const v=c.parsed;const t2=c.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return ` ${c.label} : ${fmt(v)} (${((v/t2)*100).toFixed(1)} %)`;}}}}}}); 
+}
+function toggleDetail(){const panel=document.getElementById('detail-panel'),ch=document.getElementById('chevron');const open=panel.classList.toggle('open');ch.classList.toggle('open',open);}
+
+// ═══════════════════════════════
+//  PAGE 2
+// ═══════════════════════════════
+let sgNbDonateurs=1,sgChildCount=0,sgBienCount=0;
+
+function sgSetDonateurs(n){sgNbDonateurs=n;document.getElementById('sg-d1').classList.toggle('active',n===1);document.getElementById('sg-d2').classList.toggle('active',n===2);sgRenderDonateurs();document.querySelectorAll('.bien-donor-checks').forEach(el=>sgRenderDonorChecks(el));}
+function sgRenderDonateurs(){
+  const el=document.getElementById('sg-donateurs-form');
+  const en=el.querySelectorAll('.sg-donor-name'),ea=el.querySelectorAll('.sg-donor-age');let html='';
+  for(let i=0;i<sgNbDonateurs;i++){html+=`<div class="donor-block"><div class="donor-block-title">${sgNbDonateurs===1?'Donateur':'Donateur '+(i+1)}</div><div class="form-grid"><div class="form-group"><label>Prénom / Nom</label><input type="text" class="sg-donor-name" placeholder="Ex : Jean Martin" value="${en[i]?.value||''}" oninput="sgUpdateDonorNames()"></div><div class="form-group"><label>Âge (requis si NP)</label><input type="number" class="sg-donor-age" placeholder="Ex : 62" min="1" max="120" value="${ea[i]?.value||''}"></div></div></div>`;}
+  el.innerHTML=html;
+}
+function sgUpdateDonorNames(){
+  const names=Array.from(document.querySelectorAll('.sg-donor-name')).map((el,i)=>el.value.trim()||('Donateur '+(i+1)));
+  document.querySelectorAll('.bien-donor-check-label').forEach(lbl=>{const idx=parseInt(lbl.dataset.idx);if(!isNaN(idx))lbl.querySelector('span').textContent=names[idx];});
+}
+function sgRenderDonorChecks(container){
+  const names=Array.from(document.querySelectorAll('.sg-donor-name')).map((el,i)=>el.value.trim()||('Donateur '+(i+1)));
+  let html='<div class="donor-checkboxes">';
+  for(let i=0;i<sgNbDonateurs;i++){const was=container.querySelector(`.bien-donor-check[data-idx="${i}"]`)?.checked;const chk=(was===false)?'':' checked';html+=`<label class="donor-check-label bien-donor-check-label" data-idx="${i}"><input type="checkbox" class="bien-donor-check" data-idx="${i}"${chk}><span>${names[i]}</span></label>`;}
+  html+='</div>';container.innerHTML=html;
+}
+
+function sgAddChild(){
+  sgChildCount++;const id=sgChildCount;const div=document.createElement('div');div.className='child-row';div.id='sg-child-'+id;
+  div.innerHTML=`<div class="form-group"><label>Prénom / Nom</label><input type="text" class="sg-child-name" placeholder="Ex : Sophie Martin" oninput="sgUpdateBienReps()"></div><div class="form-group"><label>Donation antérieure (&lt; 15 ans)</label><select class="sg-child-don-ant" onchange="sgToggleDonAnt(this)"><option value="non">Aucune — abattement 100 000 € entier</option><option value="oui">Oui — préciser</option></select></div><div class="form-group sg-child-ant-wrap" style="display:none;"><label>Montant déjà utilisé (€)</label><input type="number" class="sg-child-ant-val" placeholder="Ex : 30 000" min="0"></div><div style="display:flex;align-items:flex-end;"><button class="btn btn-danger" onclick="document.getElementById('sg-child-${id}').remove();sgUpdateBienReps();">✕</button></div>`;
+  document.getElementById('sg-children-list').appendChild(div);sgUpdateBienReps();
+}
+function sgToggleDonAnt(sel){sel.closest('.child-row').querySelector('.sg-child-ant-wrap').style.display=sel.value==='oui'?'':'none';}
+function sgUpdateBienReps(){document.querySelectorAll('.sg-bien-rep-wrap').forEach(w=>{if(w.style.display!=='none')sgRenderBienRep(w);});}
+
+function sgAddBien(){
+  sgBienCount++;const id=sgBienCount;const div=document.createElement('div');div.className='bien-block';div.id='sg-bien-'+id;
+  div.innerHTML=`<div class="bien-block-header"><div class="bien-block-label"><span class="bien-num-badge">${id}</span>Bien ${id}</div>${id>1?`<button class="btn btn-danger" onclick="document.getElementById('sg-bien-${id}').remove();">✕ Supprimer</button>`:''}</div>
+  <div class="form-grid" style="margin-bottom:12px;">
+    <div class="form-group"><label>Description</label><input type="text" class="sg-bien-nom" placeholder="Ex : Appartement Paris 11e"></div>
+    <div class="form-group"><label>Type de bien</label><select class="sg-bien-type"><option value="immo">Bien immobilier</option><option value="parts">Parts sociales</option></select></div>
+    <div class="form-group"><label>Valeur en pleine propriété (€)</label><input type="number" class="sg-bien-valeur" placeholder="Ex : 300 000" min="0" step="1000"></div>
+    <div class="form-group"><label>Type de donation</label><div class="toggle-group"><button class="toggle-btn active bien-btn-pp" onclick="sgBienSetType(this,'PP')">Pleine propriété</button><button class="toggle-btn bien-btn-np" onclick="sgBienSetType(this,'NP')">Nue-propriété</button></div></div>
+  </div>
+  <div class="form-group" style="margin-bottom:10px;"><label>Donateur(s) concerné(s)</label><div class="bien-donor-checks"></div></div>
+  <div class="form-group" style="margin-bottom:8px;"><label>Répartition entre les enfants</label><div class="toggle-group" style="max-width:320px;"><button class="toggle-btn active bien-rep-egal" onclick="sgBienSetRep(this,'egal')">Égale</button><button class="toggle-btn bien-rep-libre" onclick="sgBienSetRep(this,'libre')">Libre (%)</button></div></div>
+  <div class="sg-bien-rep-wrap" style="display:none;margin-top:8px;"></div>`;
+  document.getElementById('sg-biens-list').appendChild(div);
+  sgRenderDonorChecks(div.querySelector('.bien-donor-checks'));
+}
+function sgBienSetType(btn,t){const b=btn.closest('.bien-block');b.querySelectorAll('.bien-btn-pp,.bien-btn-np').forEach(x=>x.classList.remove('active'));b.querySelector(t==='PP'?'.bien-btn-pp':'.bien-btn-np').classList.add('active');}
+function sgBienSetRep(btn,r){const b=btn.closest('.bien-block');b.querySelectorAll('.bien-rep-egal,.bien-rep-libre').forEach(x=>x.classList.remove('active'));b.querySelector(r==='egal'?'.bien-rep-egal':'.bien-rep-libre').classList.add('active');const w=b.querySelector('.sg-bien-rep-wrap');w.style.display=r==='libre'?'':'none';if(r==='libre')sgRenderBienRep(w);}
+function sgRenderBienRep(wrap){
+  const children=Array.from(document.querySelectorAll('.sg-child-name')).map((el,i)=>el.value.trim()||('Enfant '+(i+1)));
+  if(!children.length){wrap.innerHTML='<p style="font-size:12px;color:var(--text-muted);">Ajoutez d\'abord des enfants.</p>';return;}
+  wrap.innerHTML=`<div class="form-grid">${children.map((n,i)=>`<div class="form-group"><label>${n} (%)</label><input type="number" class="bien-rep-pct" data-idx="${i}" placeholder="Ex : 33.33" min="0" max="100" step="0.01"></div>`).join('')}</div>`;
+}
+
+function sgGetChildren(){return Array.from(document.querySelectorAll('.child-row')).map(row=>({name:row.querySelector('.sg-child-name')?.value.trim()||'Enfant',donAnt:row.querySelector('.sg-child-don-ant')?.value==='oui',antVal:parseFloat(row.querySelector('.sg-child-ant-val')?.value)||0}));}
+function sgGetDonors(){return Array.from({length:sgNbDonateurs},(_,i)=>({name:document.querySelectorAll('.sg-donor-name')[i]?.value.trim()||('Donateur '+(i+1)),age:parseInt(document.querySelectorAll('.sg-donor-age')[i]?.value)||0}));}
+function sgGetBiens(){
+  return Array.from(document.querySelectorAll('.bien-block')).map(block=>{
+    const isNP=block.querySelector('.bien-btn-np.active');const isLibre=block.querySelector('.bien-rep-libre.active');
+    return{nom:block.querySelector('.sg-bien-nom')?.value.trim()||'Bien',type:block.querySelector('.sg-bien-type')?.value||'immo',valeur:parseFloat(block.querySelector('.sg-bien-valeur')?.value)||0,typeD:isNP?'NP':'PP',repLibre:!!isLibre,reps:Array.from(block.querySelectorAll('.bien-rep-pct')).map(i=>(parseFloat(i.value)||0)/100),donorIdxs:Array.from(block.querySelectorAll('.bien-donor-check:checked')).map(c=>parseInt(c.dataset.idx))};
+  });
+}
+
+function sgCalculer(){
+  const children=sgGetChildren(),donors=sgGetDonors(),biens=sgGetBiens();
+  const nC=children.length;
+  if(!nC){alert('Veuillez ajouter au moins un enfant.');return;}
+  if(!biens.length){alert('Veuillez ajouter au moins un bien.');return;}
+  for(let b of biens){
+    if(b.valeur<=0){alert(`Saisissez la valeur du bien "${b.nom}".`);return;}
+    if(!b.donorIdxs.length){alert(`Sélectionnez au moins un donateur pour "${b.nom}".`);return;}
+    if(b.typeD==='NP'){for(let di of b.donorIdxs){if(!donors[di].age){alert(`Âge requis pour ${donors[di].name} (bien "${b.nom}" en NP).`);return;}}}
+    if(b.repLibre){const tot=b.reps.reduce((s,v)=>s+v,0);if(Math.abs(tot-1)>0.005){alert(`La répartition de "${b.nom}" doit totaliser 100 % (actuellement ${(tot*100).toFixed(1)} %).`);return;}}
   }
 
-  function setAsset(a) {
-    typeAsset = a;
-    document.getElementById('tab-immo').classList.toggle('active', a === 'immo');
-    document.getElementById('tab-parts').classList.toggle('active', a === 'parts');
-    document.getElementById('form-title').textContent = a === 'immo'
-      ? 'Paramètres de la donation — bien immobilier'
-      : 'Paramètres de la donation — parts sociales';
-    document.getElementById('label-valeur').textContent = a === 'immo'
-      ? 'Valeur du bien en pleine propriété (€)'
-      : 'Valeur des parts en pleine propriété (€)';
-    document.getElementById('parts-info').style.display = a === 'parts' ? '' : 'none';
-    calcul();
+  // ─── CALCUL PRINCIPAL ───
+  // Colonnes du tableau = une par couple (donateur, enfant)
+  // Clé = "di_ci"
+  const colKeys=[];
+  for(let di=0;di<sgNbDonateurs;di++)for(let ci=0;ci<nC;ci++)colKeys.push(`${di}_${ci}`);
+
+  // Pour chaque colonne, accumuler au fil des biens :
+  // - valeur PP et valeur transmise par bien
+  // - abattement restant (se réduit au fil des biens)
+  // - base taxable cumulée pour calcul incrémental DMTG
+
+  // Initialisation état par colonne
+  const colState={};
+  for(let key of colKeys){
+    const ci=parseInt(key.split('_')[1]);
+    colState[key]={abattRestant:children[ci].donAnt?Math.max(0,100000-children[ci].antVal):100000,prevTaxableBase:0,antVal:children[ci].donAnt?children[ci].antVal:0,donAnt:children[ci].donAnt};
   }
 
-  function setType(t) {
-    typeD = t;
-    document.getElementById('btn-pp').classList.toggle('active', t === 'PP');
-    document.getElementById('btn-np').classList.toggle('active', t === 'NP');
-    document.getElementById('age-group').style.display = t === 'NP' ? '' : 'none';
-    document.getElementById('np-hint').style.display = 'none';
-    calcul();
+  // Pour chaque donateur, calculer les frais de notaire sur la totalité PP donnée
+  // = somme des valeurs PP de tous les biens dont il est donateur, toutes parts confondues
+  const donorTotalPP={};
+  for(let di=0;di<sgNbDonateurs;di++)donorTotalPP[di]=0;
+  for(let b of biens){
+    const nDon=b.donorIdxs.length;
+    const vppPD=b.valeur/nDon;
+    for(let di of b.donorIdxs)donorTotalPP[di]+=vppPD;
+  }
+  // Frais notaire par donateur (sur totalité PP donnée par ce donateur)
+  const donorFrais={};
+  for(let di=0;di<sgNbDonateurs;di++){
+    const vppTotal=donorTotalPP[di];
+    // Pour les frais on utilise le type du premier bien de ce donateur pour la TPF/CSI
+    // (en pratique l'acte précise mais on prend une approche globale)
+    // Les émoluments s'appliquent sur la valeur PP totale donnée
+    // TPF et CSI : on les calcule bien par bien (car dépendent du type et de la NP/PP)
+    const bareme=BAREME_IMMO; // émoluments : même barème immo pour base émoluments
+    // On garde les émoluments globaux mais TPF/CSI seront calculés par bien séparément
+    const{em:emolBrut}=calcEmoluments(vppTotal,BAREME_IMMO);
+    const tva=emolBrut*0.20,emolTTC=emolBrut+tva;
+    donorFrais[di]={emolBrut,tva,emolTTC,vppTotal};
   }
 
-  function fmt(n) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(n)); }
-  function fmtD(n) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
-  function pct(part, total) { return ((part / total) * 100).toFixed(1) + ' %'; }
-
-  function calcEmoluments(assiette, bareme) {
-    let em = 0, details = [];
-    for (let t of bareme) {
-      if (assiette <= t.min) break;
-      let base = Math.min(assiette, t.max) - t.min;
-      let montant = base * t.taux;
-      em += montant;
-      details.push({ label: 'Tranche ' + t.label, taux: (t.taux * 100).toFixed(3) + ' %', base, montant });
-    }
-    return { em, details };
-  }
-
-  function calcul() {
-    const vpp = parseFloat(document.getElementById('valeur').value) || 0;
-    const age = parseInt(document.getElementById('age').value) || 0;
-    const zone = document.getElementById('result-zone');
-    const hintEl = document.getElementById('np-hint');
-
-    // Hint barème 669 (sans la tranche entre parenthèses)
-    if (typeD === 'NP' && vpp > 0 && age > 0) {
-      const bar = getNP(age);
-      const vnp = vpp * bar.np / 100;
-      hintEl.style.display = '';
-      hintEl.innerHTML = `<div class="hint-box"><strong>Barème art. 669 CGI</strong> — Donateur âgé de ${age} ans :<br>Usufruit = <strong>${bar.usufruit} %</strong> · Nue-propriété = <strong>${bar.np} %</strong><br>Valeur NP = ${fmt(vpp)} × ${bar.np} % = <strong>${fmt(vnp)}</strong></div>`;
-    } else if (typeD === 'NP') {
-      hintEl.style.display = 'none';
-    }
-
-    if (vpp <= 0) {
-      zone.innerHTML = `<div class="result-card"><div class="empty-state"><div class="empty-icon">⚖️</div><strong>Aucun calcul effectué</strong><br>Saisissez la valeur du bien ci-dessus pour obtenir l'estimation des frais.</div></div>`;
-      return;
-    }
-    if (typeD === 'NP' && age <= 0) {
-      zone.innerHTML = `<div class="result-card"><div class="empty-state"><div class="empty-icon">👤</div><strong>Âge du donateur requis</strong><br>Indiquez l'âge du donateur pour calculer la valeur de la nue-propriété.</div></div>`;
-      return;
-    }
-
-    // Calcul des assiettes
-    let assiette_emol = vpp;
-    let assiette_tpf  = vpp;
-    let assiette_csi  = vpp;
-    let npPct = 100, npVal = vpp;
-
-    if (typeD === 'NP') {
-      const bar = getNP(age);
-      npPct = bar.np;
-      npVal = vpp * npPct / 100;
-      assiette_tpf = npVal;
-      assiette_csi = npVal;
-    }
-
-    const bareme = typeAsset === 'immo' ? BAREME_IMMO : BAREME_PARTS;
-    const { em: emolBrut, details: emolDetails } = calcEmoluments(assiette_emol, bareme);
-    const tva      = emolBrut * 0.20;
-    const emolTTC  = emolBrut + tva;
-    const debours  = 300; // TTC — estimation forfaitaire
-
-    let tpf = 0, fraisRecouv = 0, csi = 0;
-    if (typeAsset === 'immo') {
-      tpf         = assiette_tpf * 0.006;
-      fraisRecouv = tpf * 0.0237;
-      csi         = assiette_csi * 0.001;
-    }
-
-    const total = emolTTC + tpf + fraisRecouv + csi + debours;
-    const valTransmise = typeD === 'NP' ? npVal : vpp;
-    const pctTransmis = ((total / valTransmise) * 100).toFixed(2);
-
-    // Segments camembert
-    let segments = [
-      { label: 'Émoluments TTC', val: emolTTC, color: '#1a4f8c' },
-    ];
-    if (typeAsset === 'immo') {
-      segments.push({ label: 'Taxe de publicité foncière', val: tpf, color: '#0f6e56' });
-      segments.push({ label: 'Frais recouvrement & assiette', val: fraisRecouv, color: '#c08000' });
-      segments.push({ label: 'Contrib. sécurité immobilière', val: csi, color: '#4a3aa7' });
-    }
-    segments.push({ label: 'Débours forfaitaires (TTC)', val: debours, color: '#888780' });
-
-    const tagHTML = typeD === 'NP'
-      ? `<span class="tag tag-np">Nue-propriété · ${npPct} %</span>`
-      : `<span class="tag tag-pp">Pleine propriété</span>`;
-
-    const legendHTML = segments.map(s => `
-      <div class="legend-item">
-        <span class="legend-dot" style="background:${s.color};"></span>
-        <span class="legend-label">${s.label}</span>
-        <span class="legend-val">${fmt(s.val)}<span class="legend-pct">${pct(s.val, total)}</span></span>
-      </div>`).join('');
-
-    const emolRowsHTML = emolDetails.map(d => `
-      <tr class="sub">
-        <td>${d.label}</td>
-        <td class="right">${fmtD(d.base)}</td>
-        <td class="right">${d.taux}</td>
-        <td class="right">${fmtD(d.montant)}</td>
-      </tr>`).join('');
-
-    // Tableau taxes (immo uniquement)
-    const taxesHTML = typeAsset === 'immo' ? `
-      <div class="section-header">Droits & taxes — assiette : valeur ${typeD === 'NP' ? 'nue-propriété (' + fmt(npVal) + ')' : 'pleine propriété (' + fmt(vpp) + ')'}</div>
-      <table>
-        <thead><tr><th>Poste</th><th class="right">Assiette</th><th class="right">Taux</th><th class="right">Montant</th></tr></thead>
-        <tbody>
-          <tr><td>Taxe de publicité foncière</td><td class="right">${fmt(assiette_tpf)}</td><td class="right">0,60 %</td><td class="right">${fmtD(tpf)}</td></tr>
-          <tr class="sub"><td>Frais recouvrement & assiette</td><td class="right">${fmtD(tpf)}</td><td class="right">2,37 %</td><td class="right">${fmtD(fraisRecouv)}</td></tr>
-          <tr><td>Contribution sécurité immobilière</td><td class="right">${fmt(assiette_csi)}</td><td class="right">0,10 %</td><td class="right">${fmtD(csi)}</td></tr>
-        </tbody>
-      </table>` : '';
-
-    // Notes spécifiques
-    const baremeNoteImmo = (typeAsset === 'immo' && typeD === 'NP') ? `
-      <div class="bareme-note">
-        <strong>Note sur l'assiette :</strong> les émoluments du notaire sont calculés sur la valeur en pleine propriété (${fmt(vpp)}), même en cas de donation de la seule nue-propriété. La taxe de publicité foncière et la contribution de sécurité immobilière sont en revanche assises sur la valeur de la nue-propriété transmise (${fmt(npVal)}).
-      </div>` : '';
-
-    const partsNoteBottom = typeAsset === 'parts' ? `
-      <div class="parts-note">
-        <strong>Formalités complémentaires :</strong> la donation de parts sociales implique une modification des statuts de la société et la publication de cette modification dans un support d'annonces légales (JAL). Ces frais, variables selon la société et le département, ne sont pas inclus dans la présente simulation.
-      </div>` : '';
-
-    const deboursNote = `
-      <div class="bareme-note" style="background:var(--gray-light, #f1efe8); color:var(--gray, #5f5e5a); border-color: #aaa;">
-        <strong>Débours forfaitaires :</strong> le montant de 300 € est une estimation forfaitaire TTC. Les débours réels (frais de recherches, documents administratifs, etc.) varient selon chaque dossier.
-      </div>`;
-
-    zone.innerHTML = `
-      <div class="result-card">
-        <div class="total-header">
-          <div class="total-eyebrow">Estimation des frais totaux ${tagHTML}</div>
-          <div class="total-amount">${fmt(total)}</div>
-          <div class="total-sub">soit ${pctTransmis} % de la valeur transmise (${fmt(valTransmise)})</div>
-        </div>
-        <div class="chart-section">
-          <div class="pie-wrap">
-            <canvas id="pieChart" role="img" aria-label="Répartition des frais de donation"></canvas>
-          </div>
-          <div class="legend">${legendHTML}</div>
-        </div>
-        <div class="detail-toggle" onclick="toggleDetail()">
-          <div class="chevron" id="chevron"></div>
-          Voir le détail des calculs
-        </div>
-        <div class="detail-panel" id="detail-panel">
-          <div class="section-header">Émoluments du notaire — assiette : valeur pleine propriété (${fmt(vpp)})</div>
-          <table>
-            <thead><tr><th>Tranche</th><th class="right">Base</th><th class="right">Taux</th><th class="right">Montant HT</th></tr></thead>
-            <tbody>
-              ${emolRowsHTML}
-              <tr class="subtotal"><td>Total émoluments HT</td><td class="right"></td><td class="right">barème</td><td class="right">${fmtD(emolBrut)}</td></tr>
-              <tr class="sub"><td>TVA (20 %)</td><td class="right"></td><td class="right">20 %</td><td class="right">${fmtD(tva)}</td></tr>
-              <tr class="subtotal"><td>Émoluments TTC</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(emolTTC)}</td></tr>
-            </tbody>
-          </table>
-          ${taxesHTML}
-          <table>
-            <thead><tr><th>Poste</th><th class="right">Détail</th><th class="right"></th><th class="right">Montant</th></tr></thead>
-            <tbody>
-              <tr><td>Débours forfaitaires (TTC)</td><td class="right">estimation</td><td class="right">forfait</td><td class="right">${fmtD(debours)}</td></tr>
-              <tr class="total-row"><td>Total frais</td><td class="right"></td><td class="right"></td><td class="right">${fmtD(total)}</td></tr>
-            </tbody>
-          </table>
-          ${baremeNoteImmo}
-          ${deboursNote}
-          ${partsNoteBottom}
-        </div>
-      </div>`;
-
-    if (pieChart) { pieChart.destroy(); pieChart = null; }
-    const ctx = document.getElementById('pieChart').getContext('2d');
-    pieChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: segments.map(s => s.label),
-        datasets: [{ data: segments.map(s => Math.round(s.val)), backgroundColor: segments.map(s => s.color), borderWidth: 3, borderColor: '#ffffff', hoverOffset: 8 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: true, cutout: '60%',
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: c => { const v = c.parsed; const t2 = c.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return ` ${c.label} : ${fmt(v)} (${((v/t2)*100).toFixed(1)} %)`; } } }
-        }
+  // TPF + CSI + débours par bien (séparés des émoluments)
+  // On les calcule par bien et par donateur concerné, répartis entre enfants
+  // On stocke par (bien, di, ci)
+  const bienColData=[];
+  for(let b of biens){
+    const nDon=b.donorIdxs.length;
+    const vppPD=b.valeur/nDon;
+    const reps=b.repLibre?b.reps:children.map(()=>1/nC);
+    const colsData={};
+    for(let di of b.donorIdxs){
+      const npPct=b.typeD==='NP'?getNP(donors[di].age).np:100;
+      for(let ci=0;ci<nC;ci++){
+        const key=`${di}_${ci}`;
+        const rep=reps[ci]||0;
+        const valPP=vppPD*rep;
+        const valT=b.typeD==='NP'?valPP*npPct/100:valPP;
+        let tpf=0,fraisRecouv=0,csi=0;
+        if(b.type==='immo'){const at=b.typeD==='NP'?valT:valPP;tpf=at*0.006;fraisRecouv=tpf*0.0237;csi=at*0.001;}
+        colsData[key]={valPP,valT,tpf,fraisRecouv,csi,npPct,active:true};
       }
-    });
+    }
+    bienColData.push({bien:b,cols:colsData});
   }
 
-  function toggleDetail() {
-    const panel = document.getElementById('detail-panel');
-    const ch = document.getElementById('chevron');
-    const open = panel.classList.toggle('open');
-    ch.classList.toggle('open', open);
+  // Calcul DMTG incrémental par (di,ci) au fil des biens
+  // + construction données finales par bien et par colonne
+  const bienResults=bienColData.map((bcd,bIdx)=>{
+    const{bien,cols}=bcd;
+    const colsDmtg={};
+    for(let key of colKeys){
+      if(!cols[key]){colsDmtg[key]={active:false};continue;}
+      const st=colState[key];
+      const valT=cols[key].valT;
+      const abattUtilise=Math.min(valT,st.abattRestant);
+      const baseTax=Math.max(0,valT-st.abattRestant);
+      const droits=calcDMTGIncremental(baseTax,st.prevTaxableBase);
+      const abattRestantApres=Math.max(0,st.abattRestant-valT);
+      colsDmtg[key]={active:true,valPP:cols[key].valPP,valT,tpf:cols[key].tpf,fraisRecouv:cols[key].fraisRecouv,csi:cols[key].csi,npPct:cols[key].npPct,abattDispo:st.abattRestant,abattUtilise,baseTax,droits,abattRestantApres};
+      // Mettre à jour l'état pour le prochain bien
+      st.abattRestant=abattRestantApres;
+      st.prevTaxableBase+=baseTax;
+    }
+    return{bien,colsDmtg};
+  });
+
+  // Abattement restant final par colonne
+  const abattFinal={};
+  for(let key of colKeys)abattFinal[key]=colState[key].abattRestant;
+
+  // Colonnes actives = au moins un bien actif
+  const activeCols=colKeys.filter(key=>bienResults.some(br=>br.colsDmtg[key]?.active));
+
+  // Frais de notaire TPF/CSI par (di, ci) : somme sur tous les biens
+  // (les émoluments sont mutualisés par donateur)
+  const colTaxes={};
+  for(let key of activeCols){
+    let tpf=0,fr=0,csi=0;
+    for(let br of bienResults){if(br.colsDmtg[key]?.active){tpf+=br.colsDmtg[key].tpf;fr+=br.colsDmtg[key].fraisRecouv;csi+=br.colsDmtg[key].csi;}}
+    colTaxes[key]={tpf,fr,csi};
   }
+
+  // Frais notaire par donateur (émoluments proratisés par enfant + taxes)
+  // Émoluments : répartis entre enfants au prorata de leur quote-part PP
+  const deboursDonateur=300; // forfait unique par donateur
+  const donorFraisComplet={};
+  for(let di=0;di<sgNbDonateurs;di++){
+    const df=donorFrais[di];
+    // Total taxes pour ce donateur = somme sur les colonnes di_*
+    let totalTpf=0,totalFr=0,totalCsi=0;
+    for(let ci=0;ci<nC;ci++){const key=`${di}_${ci}`;if(activeCols.includes(key)){totalTpf+=colTaxes[key].tpf;totalFr+=colTaxes[key].fr;totalCsi+=colTaxes[key].csi;}}
+    donorFraisComplet[di]={...df,totalTpf,totalFr,totalCsi,debours:deboursDonateur,total:df.emolTTC+totalTpf+totalFr+totalCsi+deboursDonateur};
+  }
+
+  // Droits totaux par (di,ci) = somme sur les biens
+  const colDroitsTotal={};
+  const colAbattDispoInit={};
+  for(let key of activeCols){
+    colDroitsTotal[key]=bienResults.reduce((s,br)=>s+(br.colsDmtg[key]?.droits||0),0);
+    colAbattDispoInit[key]=children[parseInt(key.split('_')[1])].donAnt?Math.max(0,100000-children[parseInt(key.split('_')[1])].antVal):100000;
+  }
+
+  // ─── CONSTRUCTION DU TABLEAU ───
+  const nA=activeCols.length;
+  const nD=sgNbDonateurs;
+
+  function th(content,bg,extra=''){return `<th style="background:${bg};"${extra}>${content}</th>`;}
+  function td(content,cls=''){return `<td class="${cls}">${content}</td>`;}
+  function fmtOrDash(v){return v===null||v===undefined?'<span style="color:#bbb">—</span>':fmt(v);}
+
+  // En-têtes : une colonne par couple (di,ci)
+  let thead=`<thead><tr><th class="row-header"></th>`;
+  for(let key of activeCols){
+    const[di,ci]=key.split('_').map(Number);
+    thead+=`<th>${donors[di].name}<br><small style="font-weight:400;opacity:.8;font-size:10px;">→ ${children[ci].name}</small></th>`;
+  }
+  // Colonnes frais par donateur
+  for(let di=0;di<sgNbDonateurs;di++){
+    const countCols=activeCols.filter(k=>k.startsWith(di+'_')).length;
+    if(countCols>0)thead+=`<th class="th-frais" colspan="${countCols}">${donors[di].name}<br><small style="font-weight:400;opacity:.8;font-size:10px;">Frais notaire</small></th>`;
+  }
+  thead+=`<th class="th-total">Coût global</th></tr></thead>`;
+
+  // Corps
+  let tbody='<tbody>';
+
+  function catRow(label){
+    const span=nA+nD+2;// approx
+    return `<tr><td class="row-label category" colspan="999">${label}</td></tr>`;
+  }
+
+  // Pour chaque bien : valeur PP, valeur transmise
+  for(let br of bienResults){
+    const{bien,colsDmtg}=br;
+    tbody+=catRow(`${bien.nom} — ${bien.typeD==='NP'?'Nue-propriété':'Pleine propriété'}`);
+    // Valeur PP
+    tbody+=`<tr><td class="row-label sub-label">Valeur en pleine propriété</td>`;
+    for(let key of activeCols){const d=colsDmtg[key];tbody+=`<td>${d?.active?fmt(d.valPP):'<span style="color:#bbb">—</span>'}</td>`;}
+    // Colonnes frais vides pour ce bien
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+    // Valeur transmise (si NP)
+    if(bien.typeD==='NP'){
+      tbody+=`<tr><td class="row-label sub-label">Valeur en nue-propriété</td>`;
+      for(let key of activeCols){const d=colsDmtg[key];tbody+=`<td>${d?.active?fmt(d.valT):'<span style="color:#bbb">—</span>'}</td>`;}
+      for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+      tbody+=`<td class="total-col zero">—</td></tr>`;
+    }
+  }
+
+  // Section DMTG par bien
+  tbody+=catRow('Droits de mutation à titre gratuit');
+  for(let br of bienResults){
+    const{bien,colsDmtg}=br;
+    // Sous-titre bien
+    tbody+=`<tr><td class="row-label sub-label" style="font-style:italic;">${bien.nom}</td>`;
+    for(let key of activeCols)tbody+=`<td></td>`;
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+
+    // Abattement disponible pour ce bien
+    tbody+=`<tr><td class="row-label sub-label">Abattement disponible</td>`;
+    for(let key of activeCols){const d=colsDmtg[key];tbody+=`<td>${d?.active?fmt(d.abattDispo):'<span style="color:#bbb">—</span>'}</td>`;}
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+
+    // Base taxable
+    tbody+=`<tr><td class="row-label sub-label">Base taxable après abattement</td>`;
+    for(let key of activeCols){const d=colsDmtg[key];tbody+=`<td>${d?.active?fmt(d.baseTax):'<span style="color:#bbb">—</span>'}</td>`;}
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+
+    // Droits
+    tbody+=`<tr><td class="row-label sub-label">Droits de mutation</td>`;
+    for(let key of activeCols){const d=colsDmtg[key];tbody+=`<td>${d?.active?fmt(d.droits):'<span style="color:#bbb">—</span>'}</td>`;}
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+
+    // Abattement restant après ce bien
+    tbody+=`<tr><td class="row-label sub-label">Abattement restant</td>`;
+    for(let key of activeCols){const d=colsDmtg[key];tbody+=`<td class="green">${d?.active?fmt(d.abattRestantApres):'<span style="color:#bbb">—</span>'}</td>`;}
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+  }
+
+  // Section frais de notaire par donateur
+  tbody+=catRow('Frais de notaire — émoluments calculés sur la totalité des biens donnés par donateur');
+  for(let di=0;di<sgNbDonateurs;di++){
+    const df=donorFraisComplet[di];
+    const diCols=activeCols.filter(k=>k.startsWith(di+'_'));
+    if(!diCols.length)continue;
+    // Émoluments TTC
+    tbody+=`<tr><td class="row-label sub-label">${donors[di].name} — Émoluments TTC</td>`;
+    for(let key of activeCols)tbody+=`<td class="zero">—</td>`;
+    for(let di2=0;di2<sgNbDonateurs;di2++){const cc=activeCols.filter(k=>k.startsWith(di2+'_')).length;if(cc>0){if(di2===di)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col">${fmt(df.emolTTC)}</td>`;else for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+    // TPF+CSI
+    if(df.totalTpf+df.totalFr+df.totalCsi>0){
+      tbody+=`<tr><td class="row-label sub-label">${donors[di].name} — Taxes & contributions</td>`;
+      for(let key of activeCols)tbody+=`<td class="zero">—</td>`;
+      for(let di2=0;di2<sgNbDonateurs;di2++){const cc=activeCols.filter(k=>k.startsWith(di2+'_')).length;if(cc>0){if(di2===di)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col">${fmt(df.totalTpf+df.totalFr+df.totalCsi)}</td>`;else for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}}
+      tbody+=`<td class="total-col zero">—</td></tr>`;
+    }
+    // Débours
+    tbody+=`<tr><td class="row-label sub-label">${donors[di].name} — Débours (forfait TTC)</td>`;
+    for(let key of activeCols)tbody+=`<td class="zero">—</td>`;
+    for(let di2=0;di2<sgNbDonateurs;di2++){const cc=activeCols.filter(k=>k.startsWith(di2+'_')).length;if(cc>0){if(di2===di)for(let x=0;x<cc;x++)tbody+=`<td class="frais-col">${fmt(df.debours)}</td>`;else for(let x=0;x<cc;x++)tbody+=`<td class="frais-col zero">—</td>`;}}
+    tbody+=`<td class="total-col zero">—</td></tr>`;
+  }
+
+  // Ligne coût global
+  tbody+=`<tr class="total-synth"><td class="row-label">COÛT GLOBAL (droits + frais)</td>`;
+  // Par colonne di_ci : droits cumulés uniquement
+  for(let key of activeCols)tbody+=`<td>${fmt(colDroitsTotal[key])}</td>`;
+  // Par donateur : frais totaux
+  for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0){const df=donorFraisComplet[di];for(let x=0;x<cc;x++)tbody+=`<td class="frais-col">${fmt(df.total)}</td>`;}}
+  // Total global = somme droits + somme frais
+  const totalDroits=activeCols.reduce((s,key)=>s+colDroitsTotal[key],0);
+  const totalFrais=Object.values(donorFraisComplet).reduce((s,df)=>s+df.total,0);
+  tbody+=`<td class="total-col">${fmt(totalDroits+totalFrais)}</td></tr>`;
+  tbody+='</tbody>';
+
+  const tableHTML=`<table class="synth-table">${thead}${tbody}</table>`;
+
+  document.getElementById('sg-result-zone').innerHTML=`
+    <div class="export-bar">
+      <div class="export-bar-label"><strong>Simulation générée</strong> — ${donors.map(d=>d.name).join(' & ')} → ${children.map(c=>c.name).join(', ')}</div>
+      <button class="btn btn-export" onclick="exportWord()">⬇ Exporter en Word</button>
+    </div>
+    <div class="bareme-note" style="margin-bottom:1rem;"><strong>Abattement art. 779 CGI :</strong> 100 000 € par parent et par enfant. En cas de donation de plusieurs biens, l'abattement disponible se réduit bien par bien. Les droits de mutation du second bien sont calculés en continuité du barème atteint par le premier bien (sans repartir à 0). Les émoluments du notaire sont calculés sur la totalité des biens donnés par chaque donateur.</div>
+    <div class="synth-wrap">${tableHTML}</div>
+    <div class="bareme-note"><strong>Simulation à titre indicatif.</strong> Droits calculés selon le barème ligne directe (art. 777 CGI). Document réservé à l'usage professionnel interne.</div>`;
+
+  window._sgExportData={activeCols,bienResults,colDroitsTotal,donorFraisComplet,donors,children,biens,nC,sgNbDonateurs,totalDroits,totalFrais,thead,tbody,tableHTML};
+}
+
+// ═══════════════════════════════
+//  EXPORT WORD
+// ═══════════════════════════════
+function exportWord(){
+  const d=window._sgExportData;
+  if(!d){alert('Veuillez d\'abord générer une simulation.');return;}
+  const today=new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+  const F='font-family:Calibri,Arial,sans-serif;font-size:10pt;';
+  const TH=`border:1px solid #999;padding:5px 7px;background:#1a4f8c;color:white;text-align:center;${F}font-weight:bold;white-space:nowrap;`;
+  const THFR=`border:1px solid #999;padding:5px 7px;background:#854f0b;color:white;text-align:center;${F}font-weight:bold;`;
+  const THTOT=`border:1px solid #999;padding:5px 7px;background:#0a2d5e;color:white;text-align:center;${F}font-weight:bold;`;
+  const THL=`border:1px solid #999;padding:5px 7px;background:#12396b;color:white;text-align:left;${F}font-weight:bold;min-width:160px;`;
+  const TD=`border:1px solid #ccc;padding:4px 7px;text-align:right;${F}`;
+  const TDL=`border:1px solid #ccc;padding:4px 7px;text-align:left;${F}`;
+  const TDSUB=`border:1px solid #ccc;padding:4px 7px 4px 18px;text-align:left;color:#555;${F}font-size:9pt;`;
+  const TDCAT=`border:1px solid #ccc;padding:4px 7px;background:#e8e6e1;font-weight:bold;text-align:left;${F}font-size:9pt;text-transform:uppercase;`;
+  const TDGR=`border:1px solid #ccc;padding:4px 7px;text-align:right;color:#0f6e56;${F}`;
+  const TDFR=`border:1px solid #ccc;padding:4px 7px;text-align:right;background:#fdf6ee;${F}`;
+  const TDTOT=`border:1px solid #aaa;padding:5px 7px;text-align:right;font-weight:bold;background:#dbe9f8;color:#1a4f8c;${F}`;
+  const TDTOTL=`border:1px solid #aaa;padding:5px 7px;text-align:left;font-weight:bold;background:#dbe9f8;color:#1a4f8c;${F}`;
+  const TDTOTCOL=`border:1px solid #aaa;padding:5px 7px;text-align:right;font-weight:bold;background:#eef2fa;${F}`;
+  const DASH=`<span style="color:#bbb">—</span>`;
+
+  const{activeCols,bienResults,colDroitsTotal,donorFraisComplet,donors,children,biens,nC,sgNbDonateurs,totalDroits,totalFrais}=d;
+  function fW(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+
+  // En-têtes
+  let theadW=`<thead><tr><th style="${THL}"></th>`;
+  for(let key of activeCols){const[di,ci]=key.split('_').map(Number);theadW+=`<th style="${TH}">${donors[di].name} → ${children[ci].name}</th>`;}
+  for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)theadW+=`<th style="${THFR}" colspan="${cc}">${donors[di].name} — Frais notaire</th>`;}
+  theadW+=`<th style="${THTOT}">Coût global</th></tr></thead>`;
+
+  function catW(label){return `<tr><td colspan="999" style="${TDCAT}">${label}</td></tr>`;}
+  function dashCols(n){return Array(n).fill(`<td style="${TD}">${DASH}</td>`).join('');}
+
+  let tbodyW='<tbody>';
+  for(let br of bienResults){
+    const{bien,colsDmtg}=br;
+    tbodyW+=catW(`${bien.nom} — ${bien.typeD==='NP'?'Nue-propriété':'Pleine propriété'}`);
+    tbodyW+=`<tr><td style="${TDSUB}">Valeur en pleine propriété</td>`;
+    for(let key of activeCols){const dd=colsDmtg[key];tbodyW+=`<td style="${TD}">${dd?.active?fW(dd.valPP):DASH}</td>`;}
+    for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbodyW+=`<td style="${TDFR}">${DASH}</td>`;}
+    tbodyW+=`<td style="${TDTOTCOL}">${DASH}</td></tr>`;
+    if(bien.typeD==='NP'){
+      tbodyW+=`<tr><td style="${TDSUB}">Valeur en nue-propriété</td>`;
+      for(let key of activeCols){const dd=colsDmtg[key];tbodyW+=`<td style="${TD}">${dd?.active?fW(dd.valT):DASH}</td>`;}
+      for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbodyW+=`<td style="${TDFR}">${DASH}</td>`;}
+      tbodyW+=`<td style="${TDTOTCOL}">${DASH}</td></tr>`;
+    }
+  }
+  tbodyW+=catW('Droits de mutation à titre gratuit');
+  for(let br of bienResults){
+    const{bien,colsDmtg}=br;
+    tbodyW+=`<tr><td style="${TDSUB}" colspan="999"><em>${bien.nom}</em></td></tr>`;
+    const rows2=[['Abattement disponible',k=>colsDmtg[k]?.abattDispo,TD],['Base taxable après abattement',k=>colsDmtg[k]?.baseTax,TD],['Droits de mutation',k=>colsDmtg[k]?.droits,TD],['Abattement restant',k=>colsDmtg[k]?.abattRestantApres,TDGR]];
+    for(let[lbl,fn,sty]of rows2){
+      tbodyW+=`<tr><td style="${TDSUB}">${lbl}</td>`;
+      for(let key of activeCols){const dd=colsDmtg[key];const v=dd?.active?fn(key):null;tbodyW+=`<td style="${sty}">${v!==null&&v!==undefined?fW(v):DASH}</td>`;}
+      for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0)for(let x=0;x<cc;x++)tbodyW+=`<td style="${TDFR}">${DASH}</td>`;}
+      tbodyW+=`<td style="${TDTOTCOL}">${DASH}</td></tr>`;
+    }
+  }
+  tbodyW+=catW('Frais de notaire — émoluments calculés sur la totalité des biens donnés par donateur');
+  for(let di=0;di<sgNbDonateurs;di++){
+    const df=donorFraisComplet[di];const diCols=activeCols.filter(k=>k.startsWith(di+'_'));
+    if(!diCols.length)continue;
+    const frRows=[[`${donors[di].name} — Émoluments TTC`,df.emolTTC],[`${donors[di].name} — Taxes & contributions`,df.totalTpf+df.totalFr+df.totalCsi],[`${donors[di].name} — Débours (forfait TTC)`,df.debours]];
+    for(let[lbl,val]of frRows){
+      tbodyW+=`<tr><td style="${TDSUB}">${lbl}</td>`;
+      for(let key of activeCols)tbodyW+=`<td style="${TD}">${DASH}</td>`;
+      for(let di2=0;di2<sgNbDonateurs;di2++){const cc=activeCols.filter(k=>k.startsWith(di2+'_')).length;if(cc>0){if(di2===di)for(let x=0;x<cc;x++)tbodyW+=`<td style="${TDFR}">${fW(val)}</td>`;else for(let x=0;x<cc;x++)tbodyW+=`<td style="${TDFR}">${DASH}</td>`;}}
+      tbodyW+=`<td style="${TDTOTCOL}">${DASH}</td></tr>`;
+    }
+  }
+  // Total
+  tbodyW+=`<tr><td style="${TDTOTL}">COÛT GLOBAL (droits + frais)</td>`;
+  for(let key of activeCols)tbodyW+=`<td style="${TDTOT}">${fW(colDroitsTotal[key])}</td>`;
+  for(let di=0;di<sgNbDonateurs;di++){const cc=activeCols.filter(k=>k.startsWith(di+'_')).length;if(cc>0){const df=donorFraisComplet[di];for(let x=0;x<cc;x++)tbodyW+=`<td style="${TDTOT}">${fW(df.total)}</td>`;}}
+  tbodyW+=`<td style="${TDTOT}">${fW(totalDroits+totalFrais)}</td></tr>`;
+  tbodyW+='</tbody>';
+
+  const tableW=`<table style="width:100%;border-collapse:collapse;table-layout:auto;">${theadW}${tbodyW}</table>`;
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Simulation donation</title><style>@page{margin:1.5cm;}body{font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#0b0b0a;}h1{font-family:Georgia,serif;font-size:15pt;color:#1a4f8c;margin-bottom:6px;}p{font-size:10pt;color:#52514e;line-height:1.4;margin-bottom:5px;}.note{font-size:9pt;color:#854f0b;background:#faeeda;padding:6px 10px;border-left:3px solid #c08000;margin:10px 0;}.footer-note{font-size:8pt;color:#898781;border-top:1px solid #ddd;padding-top:6px;margin-top:14px;}</style></head><body>
+  <h1>Simulation de donation</h1>
+  <p><strong>Date :</strong> ${today} &nbsp;|&nbsp; <strong>Donateur(s) :</strong> ${d.donors.map(x=>x.name).join(' &amp; ')} &nbsp;|&nbsp; <strong>Donataire(s) :</strong> ${d.children.map(x=>x.name).join(', ')}</p>
+  <p><strong>Bien(s) :</strong> ${d.biens.map(b=>b.nom+' ('+new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(b.valeur)+')').join(' · ')}</p>
+  <br>${tableW}
+  <div class="note"><strong>Méthode de calcul :</strong> l'abattement de 100 000 € (art. 779 CGI) par parent et par enfant est consommé bien par bien. Les droits de mutation du second bien sont calculés en continuité du barème progressif atteint par le premier bien. Les émoluments du notaire sont calculés globalement sur la totalité des biens transmis par chaque donateur.</div>
+  <div class="footer-note">Simulation à titre indicatif — barème DMTG ligne directe (art. 777 CGI) — frais estimés selon barèmes en vigueur. Document réservé à l'usage professionnel interne.<br><em>Ce simulateur a été établi par LOCA à destination du tout meilleur service d'ingénierie patrimoniale de France.</em></div>
+  </body></html>`;
+
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`simulation_donation_${d.donors.map(x=>x.name.replace(/\s/g,'_')).join('_')}.doc`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+// Init
+renderAgeFields();sgRenderDonateurs();sgAddChild();sgAddBien();
 </script>
 </body>
 </html>
